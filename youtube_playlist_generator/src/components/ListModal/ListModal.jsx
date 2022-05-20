@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./style.scss";
-
-// import { useGoogleApi } from "react-gapi";
 
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
 
@@ -45,9 +43,9 @@ export default function ListModal(props) {
   const resultArr = [];
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
-    key: "AIzaSyBaVyI7nDvN5rWXhF-81tcfrFJUItYtjhM",
+    key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
     part: "snippet",
-    q: `${query}`,
+    q: `비창`,
     maxResults: 1,
     type: "video",
   });
@@ -60,28 +58,37 @@ export default function ListModal(props) {
     //   );
     // });
     songList.forEach((element) => {
-      setQuery(element); //q를 넣긴했는데
-      console.log(params); //여기에 지금 적용이 안되고 있음
-      const videoId = axios.get(
-        "https://www.googleapis.com/youtube/v3/search",
-        {
-          params,
-        }
-      );
-      resultArr.push(videoId);
+      console.log(element);
+      // setQuery(element); //q를 넣긴했는데
+      // console.log(query);
+
+      // setParams({
+      //   key: "AIzaSyBaVyI7nDvN5rWXhF-81tcfrFJUItYtjhM",
+      //   part: "snippet",
+      //   q: `${query}`,
+      //   maxResults: 1,
+      //   type: "video",
+      // });
+      // console.log(params); //여기에 지금 적용이 안되고 있음
+      // const videoId = axios.get(
+      //   "https://www.googleapis.com/youtube/v3/search",
+      //   {
+      //     params,
+      //   }
+      // );
+      // resultArr.push(videoId);
       // console.log(element);
     });
-    // const videoId = axios
-    //   .get("https://www.googleapis.com/youtube/v3/search", {
-    //     params,
-    //   })
-    //   .then((res) => res.data.items[0].id.videoId);
-    // resultArr.push(await videoId);
-    // console.log(await videoId);
+    const videoId = axios
+      .get("https://www.googleapis.com/youtube/v3/search", {
+        params,
+      })
+      .then((res) => res.data.items[0].id.videoId);
+    resultArr.push(await videoId);
+    console.log(await videoId);
     // .then((res) => console.log(res));
     return;
   }
-  console.log(resultArr);
 
   // async function createPlaylist() {
   //   const res = await fetch(
