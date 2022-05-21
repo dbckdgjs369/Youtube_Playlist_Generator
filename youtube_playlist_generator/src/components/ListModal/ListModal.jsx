@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "./style.scss";
 
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
-
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
+const REDIRECT_URI = "http://localhost:3000/auth";
+const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/drive.metadata.readonly`;
+const access_token_url = `https://oauth2.googleapis.com/token?code=${API_KEY}&clientid=${process.env.REACT_APP_CLIENT_ID}&clientsecret=${process.env.REACT_APP_CLIENT_SECRET}&redirect_uri=${REDIRECT_URI}&grant_type=authorization_code`;
 
-const redirect_uri = "http://localhost:5000/callback";
 const scopes = [
   "https://www.googleapis.com/auth/youtube",
   "https://www.googleapis.com/auth/youtube.force-ssl",
@@ -53,20 +55,12 @@ export default function ListModal(props) {
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
-    // key: "AIzaSyBaVyI7nDvN5rWXhF-81tcfrFJUItYtjhM",
     part: "snippet",
     q: `${query}`,
     maxResults: 1,
     type: "video",
   });
   function getSearchResult() {
-    // songList.forEach((element) => {
-    //   resultArr.push(
-    //     axios
-    //       .get("https://www.googleapis.com/youtube/v3/search", { element })
-    //       .then((res) => res.data.items[0].id.videoId)
-    //   );
-    // });
     songList.forEach(async (e) => {
       params.q = e;
       const videoId = await axios
@@ -74,19 +68,12 @@ export default function ListModal(props) {
           params,
         })
         .then((res) => res.data.items[0].id.videoId);
-
       songIdList.push(videoId);
-      console.log(songIdList);
     });
-
-    // const videoId = axios
-    //   .get("https://www.googleapis.com/youtube/v3/search", {
-    //     params,
-    //   })
-    //   .then((res) => res.data.items[0].id.videoId);
-    // console.log(await videoId);
+    console.log(songIdList);
     return;
   }
+  function login() {}
 
   // async function createPlaylist() {
   //   const res = await fetch(
@@ -116,7 +103,9 @@ export default function ListModal(props) {
               close
             </button>
             <button className="allBtn">All</button>
-            {/* <button onClick={() => getPermission()}>test</button> */}
+            <a href={url}>
+              <button>login</button>
+            </a>
           </footer>
         </div>
       ) : null}
