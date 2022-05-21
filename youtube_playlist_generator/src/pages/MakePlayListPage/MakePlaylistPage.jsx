@@ -22,7 +22,7 @@ export default function MakePlaylistPage() {
       v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
     );
 
-    console.log(searchArr);
+    // console.log(searchArr);
     return searchArr;
   };
 

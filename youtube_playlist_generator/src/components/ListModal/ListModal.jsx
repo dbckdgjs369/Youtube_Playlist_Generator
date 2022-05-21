@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./style.scss";
 
+const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
+
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
 
-const clientId =
-  "583239101687-9t04pidco7vejdtcjac2qi0hccrag7m1.apps.googleusercontent.com";
 const redirect_uri = "http://localhost:5000/callback";
 const scopes = [
   "https://www.googleapis.com/auth/youtube",
@@ -13,17 +13,26 @@ const scopes = [
   "https://www.googleapis.com/auth/youtube.readonly",
   "https://www.googleapis.com/auth/youtubepartner",
 ];
+const resultArr = [];
 
-async function getPermission() {
-  const temp = await axios
-    .post(
-      `${API_END_POINT}?client_id=${clientId}&redirect_uri=${redirect_uri}&scope=https://www.googleapis.com/auth/youtube&
-    response_type=code&
-    access_type=offline`
-    )
-    .then((res) => console.log(res.data));
-  console.log(temp);
-}
+const DUMMY_VIDEO_ID_DATA = [
+  "HsZZMU4nm3U",
+  "Jh4QFaPmdss",
+  "R9At2ICm4LQ",
+  "3GWscde8rM8",
+  "xbLbHjeOvMo",
+];
+
+// async function getPermission() {
+//   const temp = await axios
+//     .post(
+//       `${API_END_POINT}?client_id=${clientId}&redirect_uri=${redirect_uri}&scope=https://www.googleapis.com/auth/youtube&
+//     response_type=code&
+//     access_type=offline`
+//     )
+//     .then((res) => console.log(res.data));
+//   console.log(temp);
+// }
 
 // getPermission();
 
@@ -39,17 +48,18 @@ export default function ListModal(props) {
       console.log("a"); //마지막에 undefined임
     }
   });
-  console.log(songList);
-  const resultArr = [];
+  // console.log(songList);
+  const songIdList = [];
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
-    key: `${process.env.REACT_APP_YOUTUBE_API_KEY}`,
+    key: process.env.REACT_APP_YOUTUBE_API_KEY,
+    // key: "AIzaSyBaVyI7nDvN5rWXhF-81tcfrFJUItYtjhM",
     part: "snippet",
-    q: `비창`,
+    q: `${query}`,
     maxResults: 1,
     type: "video",
   });
-  async function getSearchResult() {
+  function getSearchResult() {
     // songList.forEach((element) => {
     //   resultArr.push(
     //     axios
@@ -57,36 +67,24 @@ export default function ListModal(props) {
     //       .then((res) => res.data.items[0].id.videoId)
     //   );
     // });
-    songList.forEach((element) => {
-      console.log(element);
-      // setQuery(element); //q를 넣긴했는데
-      // console.log(query);
+    songList.forEach(async (e) => {
+      params.q = e;
+      const videoId = await axios
+        .get("https://www.googleapis.com/youtube/v3/search", {
+          params,
+        })
+        .then((res) => res.data.items[0].id.videoId);
 
-      // setParams({
-      //   key: "AIzaSyBaVyI7nDvN5rWXhF-81tcfrFJUItYtjhM",
-      //   part: "snippet",
-      //   q: `${query}`,
-      //   maxResults: 1,
-      //   type: "video",
-      // });
-      // console.log(params); //여기에 지금 적용이 안되고 있음
-      // const videoId = axios.get(
-      //   "https://www.googleapis.com/youtube/v3/search",
-      //   {
-      //     params,
-      //   }
-      // );
-      // resultArr.push(videoId);
-      // console.log(element);
+      songIdList.push(videoId);
+      console.log(songIdList);
     });
-    const videoId = axios
-      .get("https://www.googleapis.com/youtube/v3/search", {
-        params,
-      })
-      .then((res) => res.data.items[0].id.videoId);
-    resultArr.push(await videoId);
-    console.log(await videoId);
-    // .then((res) => console.log(res));
+
+    // const videoId = axios
+    //   .get("https://www.googleapis.com/youtube/v3/search", {
+    //     params,
+    //   })
+    //   .then((res) => res.data.items[0].id.videoId);
+    // console.log(await videoId);
     return;
   }
 
@@ -118,7 +116,7 @@ export default function ListModal(props) {
               close
             </button>
             <button className="allBtn">All</button>
-            <button onClick={() => getPermission()}>test</button>
+            {/* <button onClick={() => getPermission()}>test</button> */}
           </footer>
         </div>
       ) : null}
