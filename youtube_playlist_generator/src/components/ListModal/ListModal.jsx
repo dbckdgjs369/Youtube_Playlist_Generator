@@ -6,7 +6,8 @@ import "./style.scss";
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
 const REDIRECT_URI = "http://localhost:3000/auth";
-const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/drive.metadata.readonly`;
+const SCOPE = "https://www.googleapis.com/auth/youtube";
+const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
 const access_token_url = `https://oauth2.googleapis.com/token?code=${API_KEY}&clientid=${process.env.REACT_APP_CLIENT_ID}&clientsecret=${process.env.REACT_APP_CLIENT_SECRET}&redirect_uri=${REDIRECT_URI}&grant_type=authorization_code`;
 
 const scopes = [
