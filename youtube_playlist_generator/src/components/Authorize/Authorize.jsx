@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function GoogleLoginPage() {
   const [accessToken, setAccessToken] = useState("");
   const [playlistId, setPlaylistId] = useState("");
-  const REDIRECT_URI = "http://localhost:3000/auth";
+  const REDIRECT_URI = "http://localhost:3000";
   const API_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlists";
   const videoId = "R9At2ICm4LQ";
   const authorization_code = new URLSearchParams(window.location.search).get(
@@ -27,9 +27,7 @@ export default function GoogleLoginPage() {
     const add = axios.post(
       `${API_ENDPOINT}?access_token=${accessToken}&part=snippet,status&resource.snippet.title=${title}&resource.snippet.description=${description}`
     );
-    // const playlistid = (await add).data.id;
     setPlaylistId((await add).data.id);
-    console.log(playlistId);
   }
   function addToPlayList() {
     axios.post(
@@ -39,7 +37,6 @@ export default function GoogleLoginPage() {
 
   return (
     <div>
-      {authorization_code}
       <button onClick={getAccessToken}>get</button>
       {/* <a href="/"> */}
       <button onClick={makeNewPlayList}>add</button>
