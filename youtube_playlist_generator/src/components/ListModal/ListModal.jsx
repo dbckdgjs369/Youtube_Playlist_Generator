@@ -35,12 +35,12 @@ export default function ListModal(props) {
     const temp = element.props.children;
     if (temp !== undefined) {
       songList.push(temp[1]);
-    } else {
-      console.log("a"); //마지막에 undefined임
     }
   });
   // console.log(songList);
-  const songIdList = [];
+  // let songIdList = [];
+  const temp = [];
+  const [songIdList, setsongIdList] = useState([]);
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
@@ -49,17 +49,20 @@ export default function ListModal(props) {
     maxResults: 1,
     type: "video",
   });
-  function getSearchResult() {
+  async function getSearchResult() {
     songList.forEach(async (e) => {
       params.q = e;
-      const videoId = await axios
+      await axios
         .get("https://www.googleapis.com/youtube/v3/search", {
           params,
         })
-        .then((res) => res.data.items[0].id.videoId);
-      songIdList.push(videoId);
+        .then((res) => songIdList.push(res.data.items[0].id.videoId));
+      // songIdList.push(videoId);
     });
-    console.log(songIdList);
+    // songIdList = new Set(...songIdList);
+    setsongIdList([...new Set(songIdList)]);
+    // set = [...new Set(songIdList)];
+    console.log(await songIdList);
     return;
   }
 
@@ -86,7 +89,7 @@ export default function ListModal(props) {
             </a>
           </div>
           <div>
-            <Authorize />
+            <Authorize songIdList={songIdList} />
           </div>
         </div>
       ) : null}

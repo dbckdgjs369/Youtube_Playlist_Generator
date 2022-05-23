@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-export default function GoogleLoginPage() {
+export default function GoogleLoginPage(props) {
   const [accessToken, setAccessToken] = useState("");
   const [playlistId, setPlaylistId] = useState("");
   const REDIRECT_URI = "http://localhost:3000";
@@ -30,16 +30,27 @@ export default function GoogleLoginPage() {
     setPlaylistId((await add).data.id);
   }
   function addToPlayList() {
-    axios.post(
-      `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${videoId}&resource.snippet.resourceId.kind=youtube%23video`
+    console.log(props.songIdList);
+    props.songIdList.forEach((element) =>
+      axios.post(
+        `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${element}&resource.snippet.resourceId.kind=youtube%23video`
+      )
     );
+    // axios.post(
+    //   `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${videoId}&resource.snippet.resourceId.kind=youtube%23video`
+    // );
   }
 
   return (
     <div>
       <button onClick={getAccessToken}>get</button>
+      <br />
       {/* <a href="/"> */}
+      <label>playlist 이름을 입력해주세요</label>
+      <br />
+      <input></input>
       <button onClick={makeNewPlayList}>add</button>
+      <br />
       <button onClick={addToPlayList}>addToPlayList</button>
       {/* </a> */}
     </div>
