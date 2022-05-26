@@ -36,9 +36,6 @@ export default function GoogleLoginPage(props) {
         `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${element}&resource.snippet.resourceId.kind=youtube%23video`
       )
     );
-    // axios.post(
-    //   `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${videoId}&resource.snippet.resourceId.kind=youtube%23video`
-    // );
   }
 
   return (
