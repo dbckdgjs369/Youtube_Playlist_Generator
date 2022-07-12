@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
@@ -11,8 +11,37 @@ const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_
 
 export default function ListModal(props) {
   const { open, close } = props;
-
+  const [checkedList, setCheckedLists] = useState([]);
   const songList = props.list.split("\n");
+  // 전체 체크 클릭 시 발생하는 함수
+  const onCheckedAll = useCallback(
+    (checked) => {
+      if (checked) {
+        const checkedListArray = [];
+
+        songList.forEach((list) => checkedListArray.push(list));
+        console.log(checkedListArray);
+
+        setCheckedLists(checkedListArray);
+      } else {
+        setCheckedLists([]);
+      }
+    },
+    [songList]
+  );
+
+  const onCheckedElement = useCallback(
+    (checked, value) => {
+      if (checked) {
+        setCheckedLists([...checkedList, value]);
+        console.log(checkedList);
+      } else {
+        setCheckedLists(checkedList.filter((el) => el !== value));
+      }
+    },
+    [checkedList]
+  );
+
   const makeList = (songList) => {
     const searchArr = songList.map((v) =>
       v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
@@ -55,13 +84,28 @@ export default function ListModal(props) {
               close
             </button>
           </header>
-          <div>
+          <div className="songListDiv">
+            <input
+              type="checkbox"
+              onChange={(e) => onCheckedAll(e.target.checked)}
+              checked={
+                checkedList.length === 0
+                  ? false
+                  : checkedList.length === songList.length
+                  ? true
+                  : false
+              }
+            />
             {makeList(songList).map((value, index) =>
               !value ? (
                 <div key={index}></div>
               ) : (
                 <div key={index}>
-                  <input type="checkbox" defaultChecked={true} />
+                  <input
+                    type="checkbox"
+                    onChange={(e) => onCheckedElement(e.target.checked, value)}
+                    checked={checkedList.includes(value) ? true : false}
+                  />
                   {value}
                 </div>
               )
