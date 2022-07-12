@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
+import { searchVideo, useSearchVideo } from "../../apis/Video/video";
+import { useQuery } from "react-query";
 
+axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
 const REDIRECT_URI = "http://localhost:3000";
@@ -39,8 +41,7 @@ export default function ListModal(props) {
   });
   // console.log(songList);
   // let songIdList = [];
-  const temp = [];
-  const [songIdList, setsongIdList] = useState([]);
+  const [songIdList, setSongIdList] = useState([]);
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
@@ -49,21 +50,20 @@ export default function ListModal(props) {
     maxResults: 1,
     type: "video",
   });
+
   async function getSearchResult() {
-    songList.forEach(async (e) => {
-      params.q = e;
+    const temp = [];
+    songList.forEach(async (song) => {
+      params.q = song;
+      console.log(params);
       await axios
-        .get("https://www.googleapis.com/youtube/v3/search", {
+        .get("/search", {
           params,
         })
-        .then((res) => songIdList.push(res.data.items[0].id.videoId));
-      // songIdList.push(videoId);
+        .then((res) => temp.push(res.data.items[0].id.videoId));
     });
-    // songIdList = new Set(...songIdList);
-    setsongIdList([...new Set(songIdList)]);
-    // set = [...new Set(songIdList)];
-    console.log(await songIdList);
-    return;
+    setSongIdList(await temp);
+    console.log(songIdList);
   }
 
   return (
@@ -77,16 +77,13 @@ export default function ListModal(props) {
           </header>
           <div className="contents">{props.children}</div>
           <div>
-            <button class="createBtn" onClick={() => getSearchResult()}>
-              Create!
-            </button>
-            <button className="closeBtn" onClick={close}>
-              close
-            </button>
-            <button className="allBtn">All</button>
             <a href={url}>
               <button>login</button>
             </a>
+            <br />
+            <button class="createBtn" onClick={() => getSearchResult()}>
+              Create API List!
+            </button>
           </div>
           <div>
             <Authorize songIdList={songIdList} />

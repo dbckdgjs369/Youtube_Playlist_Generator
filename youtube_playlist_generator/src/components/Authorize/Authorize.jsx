@@ -1,14 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useEffect } from "react";
 export default function GoogleLoginPage(props) {
   const [accessToken, setAccessToken] = useState("");
   const [playlistId, setPlaylistId] = useState("");
+  const [playlistName, setPlaylistName] = useState("YPG");
   const REDIRECT_URI = "http://localhost:3000";
   const API_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlists";
-  const videoId = "R9At2ICm4LQ";
   const authorization_code = new URLSearchParams(window.location.search).get(
     "code"
   );
+  console.log(accessToken);
   async function getAccessToken() {
     const token = axios.post("https://oauth2.googleapis.com/token", {
       client_id: process.env.REACT_APP_CLIENT_ID,
@@ -18,19 +20,21 @@ export default function GoogleLoginPage(props) {
       grant_type: "authorization_code",
     });
     setAccessToken((await token).data.access_token);
+    console.log(authorization_code);
+    console.log(accessToken);
   }
 
   async function makeNewPlayList() {
     console.log("access: " + accessToken);
-    const title = "Hello";
-    const description = "Hello";
+    const description = "Youtube Playlist Generator";
     const add = axios.post(
-      `${API_ENDPOINT}?access_token=${accessToken}&part=snippet,status&resource.snippet.title=${title}&resource.snippet.description=${description}`
+      `${API_ENDPOINT}?access_token=${accessToken}&part=snippet,status&resource.snippet.title=${playlistName}&resource.snippet.description=${description}`
     );
     setPlaylistId((await add).data.id);
   }
   function addToPlayList() {
     console.log(props.songIdList);
+    console.log(accessToken);
     props.songIdList.forEach((element) =>
       axios.post(
         `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${element}&resource.snippet.resourceId.kind=youtube%23video`
@@ -40,16 +44,14 @@ export default function GoogleLoginPage(props) {
 
   return (
     <div>
-      <button onClick={getAccessToken}>get</button>
+      <button onClick={getAccessToken}>get AccessToken</button>
       <br />
-      {/* <a href="/"> */}
       <label>playlist 이름을 입력해주세요</label>
       <br />
-      <input></input>
+      <input onChange={(e) => setPlaylistName(e.target.value)} />
       <button onClick={makeNewPlayList}>add</button>
       <br />
       <button onClick={addToPlayList}>addToPlayList</button>
-      {/* </a> */}
     </div>
   );
 }
