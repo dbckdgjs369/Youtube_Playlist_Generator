@@ -38,13 +38,13 @@ export default function MakePlaylistPage() {
         ></textarea>
         <button onClick={buttonClick}>생성</button>
         <ListModal open={modalOpen} close={closeModal}>
-          {makeList(inputTextField).map((v) =>
-            !v ? (
-              <div></div>
+          {makeList(inputTextField).map((value, index) =>
+            !value ? (
+              <div key={index}></div>
             ) : (
-              <div>
-                <input type="checkbox" />
-                {v}
+              <div key={index}>
+                <input type="checkbox" defaultChecked={true} />
+                {value}
               </div>
             )
           )}

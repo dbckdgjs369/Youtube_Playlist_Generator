@@ -81,7 +81,7 @@ export default function ListModal(props) {
               <button>login</button>
             </a>
             <br />
-            <button class="createBtn" onClick={() => getSearchResult()}>
+            <button className="createBtn" onClick={() => getSearchResult()}>
               Create API List!
             </button>
           </div>
