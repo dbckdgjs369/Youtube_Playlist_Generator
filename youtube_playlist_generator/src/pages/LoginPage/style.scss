@@ -1,0 +1,13 @@
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 30px;
+}
+
+.LoginBtn {
+  width: 25%;
+  height: 50px;
+  font-size: 30px;
+  margin: 0 auto;
+}

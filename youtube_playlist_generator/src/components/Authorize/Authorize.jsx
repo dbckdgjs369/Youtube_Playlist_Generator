@@ -1,16 +1,17 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useEffect } from "react";
+
 export default function GoogleLoginPage(props) {
   const [accessToken, setAccessToken] = useState("");
   const [playlistId, setPlaylistId] = useState("");
   const [playlistName, setPlaylistName] = useState("YPG");
-  const REDIRECT_URI = "http://localhost:3000";
+  const REDIRECT_URI = "http://localhost:3000/create";
   const API_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlists";
   const authorization_code = new URLSearchParams(window.location.search).get(
     "code"
   );
   console.log(accessToken);
+  console.log(authorization_code);
   console.log(props.songIdList);
   const test = () => {
     console.log(props.songIdList);
