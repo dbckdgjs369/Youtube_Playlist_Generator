@@ -11,6 +11,10 @@ export default function GoogleLoginPage(props) {
     "code"
   );
   console.log(accessToken);
+  console.log(props.songIdList);
+  const test = () => {
+    console.log(props.songIdList);
+  };
   async function getAccessToken() {
     const token = axios.post("https://oauth2.googleapis.com/token", {
       client_id: process.env.REACT_APP_CLIENT_ID,
@@ -44,6 +48,7 @@ export default function GoogleLoginPage(props) {
 
   return (
     <div>
+      <button onClick={test}>test</button>
       <button onClick={getAccessToken}>get AccessToken</button>
       <br />
       <label>playlist 이름을 입력해주세요</label>

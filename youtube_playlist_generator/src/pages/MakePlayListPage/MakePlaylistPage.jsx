@@ -14,14 +14,6 @@ export default function MakePlaylistPage() {
   const closeModal = () => {
     setModalOpen(false);
   };
-  const makeList = (songs) => {
-    let line = songs.split("\n");
-    const searchArr = line.map((v) =>
-      v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
-    );
-
-    return searchArr;
-  };
 
   const buttonClick = () => {
     openModal(true);
@@ -29,7 +21,7 @@ export default function MakePlaylistPage() {
   return (
     <div>
       <div className="inputDiv">
-        <span>플레이리스트를 만들고 싶은 곡을 넣어주세요</span>
+        <h1>플레이리스트를 만들고 싶은 곡을 넣어주세요</h1>
         <textarea
           className="inputList"
           placeholder="리스트를 넣어주세요"
@@ -37,18 +29,7 @@ export default function MakePlaylistPage() {
           onChange={onChangeTextField}
         ></textarea>
         <button onClick={buttonClick}>생성</button>
-        <ListModal open={modalOpen} close={closeModal}>
-          {makeList(inputTextField).map((v) =>
-            !v ? (
-              <div></div>
-            ) : (
-              <div>
-                <input type="checkbox" />
-                {v}
-              </div>
-            )
-          )}
-        </ListModal>
+        <ListModal open={modalOpen} close={closeModal} list={inputTextField} />
       </div>
     </div>
   );
