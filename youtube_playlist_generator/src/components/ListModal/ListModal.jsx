@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
@@ -12,14 +12,22 @@ const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_
 export default function ListModal(props) {
   const { open, close } = props;
   const [checkedList, setCheckedLists] = useState([]);
-  const songList = props.list.split("\n");
-  // 전체 체크 클릭 시 발생하는 함수
+  const makeList = (songList) => {
+    return songList.map((v) =>
+      v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
+    );
+  };
+
+  const songList = makeList(props.list.split("\n"));
+
   const onCheckedAll = useCallback(
     (checked) => {
       if (checked) {
         const checkedListArray = [];
 
-        songList.forEach((list) => checkedListArray.push(list));
+        songList.forEach((list) =>
+          list.length !== 0 ? checkedListArray.push(list) : null
+        );
         console.log(checkedListArray);
 
         setCheckedLists(checkedListArray);
@@ -41,14 +49,9 @@ export default function ListModal(props) {
     },
     [checkedList]
   );
-
-  const makeList = (songList) => {
-    const searchArr = songList.map((v) =>
-      v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
-    );
-
-    return searchArr;
-  };
+  useEffect(() => {
+    console.log(checkedList);
+  }, [checkedList]);
 
   const [songIdList, setSongIdList] = useState([]);
   const [query, setQuery] = useState("");
@@ -60,20 +63,24 @@ export default function ListModal(props) {
     type: "video",
   });
 
-  async function getSearchResult() {
+  async function getSearchResult(checkedList) {
     const temp = [];
-    songList.forEach(async (song) => {
+    checkedList.forEach(async (song) => {
       params.q = song;
       console.log(params);
-      await axios
+      const t = await axios
         .get("/search", {
           params,
         })
         .then((res) => temp.push(res.data.items[0].id.videoId));
+      console.log(t);
     });
     setSongIdList(await temp);
     console.log(songIdList);
   }
+  useEffect(() => {
+    console.log(songIdList);
+  }, [songIdList]);
 
   return (
     <div className={open ? "openedModal" : "modal"}>
@@ -116,7 +123,10 @@ export default function ListModal(props) {
               <button>login</button>
             </a>
             <br />
-            <button className="createBtn" onClick={() => getSearchResult()}>
+            <button
+              className="createBtn"
+              onClick={() => getSearchResult(checkedList)}
+            >
               Create API List!
             </button>
           </div>

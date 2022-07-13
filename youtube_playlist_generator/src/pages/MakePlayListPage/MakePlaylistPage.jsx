@@ -14,14 +14,6 @@ export default function MakePlaylistPage() {
   const closeModal = () => {
     setModalOpen(false);
   };
-  const makeList = (songs) => {
-    let line = songs.split("\n");
-    const searchArr = line.map((v) =>
-      v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
-    );
-
-    return searchArr;
-  };
 
   const buttonClick = () => {
     openModal(true);
