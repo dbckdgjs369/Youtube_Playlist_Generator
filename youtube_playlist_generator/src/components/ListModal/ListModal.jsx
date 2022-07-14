@@ -1,8 +1,7 @@
-import React, { useCallback, useState, useEffect, useContext } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
-import { UserContext } from "../../store/UserInfoContext";
 
 axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 
@@ -46,9 +45,6 @@ export default function ListModal(props) {
     },
     [checkedList]
   );
-  useEffect(() => {
-    console.log(checkedList);
-  }, [checkedList]);
 
   const [songIdList, setSongIdList] = useState([]);
   const [query, setQuery] = useState("");
@@ -70,7 +66,6 @@ export default function ListModal(props) {
           params,
         })
         .then((res) => temp.push(res.data.items[0].id.videoId));
-      console.log(t);
     });
     setSongIdList(await temp);
     console.log(songIdList);
@@ -78,7 +73,6 @@ export default function ListModal(props) {
   useEffect(() => {
     console.log(songIdList);
   }, [songIdList]);
-  const { accessToken } = useContext(UserContext);
   return (
     <div className={open ? "openedModal" : "modal"}>
       {open ? (
@@ -121,8 +115,7 @@ export default function ListModal(props) {
               className="createBtn"
               onClick={() => getSearchResult(checkedList)}
             >
-              Create API List!
-              {accessToken}
+              Get Viedo IDs
             </button>
           </div>
           <div>
