@@ -12,7 +12,9 @@ const CreateUserProvider = ({ children }) => {
   };
   const context = {
     accessToken,
+    authorization_code,
     setAccessToken,
+    setAuthorization_code,
   };
   // const UserInfo =
   //   // useMemo(

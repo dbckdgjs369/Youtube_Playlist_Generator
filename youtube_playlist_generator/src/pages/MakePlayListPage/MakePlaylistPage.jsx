@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useEffect } from "react";
 import ListModal from "../../components/ListModal/ListModal";
 import { UserContext } from "../../store/UserInfoContext";
 import "./style.scss";
@@ -19,7 +20,16 @@ export default function MakePlaylistPage() {
   const buttonClick = () => {
     openModal(true);
   };
-  const { accessToken } = useContext(UserContext);
+  const { accessToken, setAuthorization_code } = useContext(UserContext);
+  useEffect(() => {
+    const authorization_code = new URLSearchParams(window.location.search).get(
+      "code"
+    );
+    console.log(authorization_code);
+    setAuthorization_code(authorization_code);
+    window.history.pushState("", "createPage", "/create");
+  }, []);
+
   return (
     <div>
       {accessToken}
