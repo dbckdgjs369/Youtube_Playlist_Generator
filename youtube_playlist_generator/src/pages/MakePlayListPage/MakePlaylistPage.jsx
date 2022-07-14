@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ListModal from "../../components/ListModal/ListModal";
+import { UserContext } from "../../store/UserInfoContext";
 import "./style.scss";
 
 export default function MakePlaylistPage() {
@@ -18,8 +19,10 @@ export default function MakePlaylistPage() {
   const buttonClick = () => {
     openModal(true);
   };
+  const { accessToken } = useContext(UserContext);
   return (
     <div>
+      {accessToken}
       <div className="inputDiv">
         <h1>플레이리스트를 만들고 싶은 곡을 넣어주세요</h1>
         <textarea

@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
+import { UserContext } from "../../store/UserInfoContext";
 
 axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 
@@ -77,7 +78,7 @@ export default function ListModal(props) {
   useEffect(() => {
     console.log(songIdList);
   }, [songIdList]);
-
+  const { accessToken } = useContext(UserContext);
   return (
     <div className={open ? "openedModal" : "modal"}>
       {open ? (
@@ -121,6 +122,7 @@ export default function ListModal(props) {
               onClick={() => getSearchResult(checkedList)}
             >
               Create API List!
+              {accessToken}
             </button>
           </div>
           <div>
