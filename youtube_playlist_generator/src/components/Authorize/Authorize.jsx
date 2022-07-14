@@ -1,33 +1,15 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../../store/UserInfoContext";
+
 export default function GoogleLoginPage(props) {
-  const [accessToken, setAccessToken] = useState("");
   const [playlistId, setPlaylistId] = useState("");
   const [playlistName, setPlaylistName] = useState("YPG");
-  const REDIRECT_URI = "http://localhost:3000";
   const API_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlists";
-  const authorization_code = new URLSearchParams(window.location.search).get(
-    "code"
-  );
-  console.log(accessToken);
-  console.log(props.songIdList);
-  const test = () => {
-    console.log(props.songIdList);
-  };
-  async function getAccessToken() {
-    const token = axios.post("https://oauth2.googleapis.com/token", {
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      client_secret: process.env.REACT_APP_CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code: authorization_code,
-      grant_type: "authorization_code",
-    });
-    setAccessToken((await token).data.access_token);
-    console.log(authorization_code);
-    console.log(accessToken);
-  }
 
+  const { accessToken, authorization_code } = useContext(UserContext);
+  console.log(authorization_code);
+  console.log(props.songIdList);
   async function makeNewPlayList() {
     console.log("access: " + accessToken);
     const description = "Youtube Playlist Generator";
@@ -48,13 +30,11 @@ export default function GoogleLoginPage(props) {
 
   return (
     <div>
-      <button onClick={test}>test</button>
-      <button onClick={getAccessToken}>get AccessToken</button>
       <br />
       <label>playlist 이름을 입력해주세요</label>
       <br />
       <input onChange={(e) => setPlaylistName(e.target.value)} />
-      <button onClick={makeNewPlayList}>add</button>
+      <button onClick={makeNewPlayList}>Make PlayList</button>
       <br />
       <button onClick={addToPlayList}>addToPlayList</button>
     </div>
