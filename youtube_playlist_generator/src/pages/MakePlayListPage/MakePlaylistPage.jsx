@@ -51,9 +51,7 @@ export default function MakePlaylistPage() {
 
   return (
     <div>
-      {accessToken}
       <div className="inputDiv">
-        {authorization_code}
         <h1>플레이리스트를 만들고 싶은 곡을 넣어주세요</h1>
         <textarea
           className="inputList"
