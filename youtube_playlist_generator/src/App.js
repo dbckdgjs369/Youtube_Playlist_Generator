@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import GoogleLoginPage from "./pages/GoogleLoginPage/GoogleLoginPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import MakePlaylistPage from "./pages/MakePlayListPage/MakePlaylistPage";
 function App() {

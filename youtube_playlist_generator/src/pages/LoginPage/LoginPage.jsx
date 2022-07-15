@@ -11,9 +11,10 @@ export default function LoginPage() {
     <div className="Wrapper">
       <h1>Welcome to YouTube Playlist Generator!!</h1>
       <h2>Log in to the account you want to create a playlist for </h2>
-      <a href={url}>
-        <button className="LoginBtn">Login</button>
-      </a>
+
+      <button className="LoginBtn">
+        <a href={url}>Login </a>
+      </button>
     </div>
   );
 }
