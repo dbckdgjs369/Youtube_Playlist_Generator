@@ -1,5 +1,8 @@
 # Youtube_Playlist_Generator
 
+## 설명
+ 유튜브 플레이리스트의 타임 스탬프를 복사해서 넣으면 내 재생목록으로 만들어주는 프로그램입니다.
+
 ## how to get start
 ```
 npm install
