@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
+import { searchVideo } from "../../apis/Video/video";
 
 axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 
@@ -20,6 +21,7 @@ export default function ListModal(props) {
       .then((response) => response.json())
       .then((data) => console.log(data));
   }, []);
+
   const songList = makeList(props.list.split("\n"));
 
   const onCheckedAll = useCallback(
@@ -72,6 +74,9 @@ export default function ListModal(props) {
           params,
         })
         .then((res) => temp.push(res.data.items[0].id.videoId));
+      // const vId = searchVideo(params);
+      // console.log(vId);
+      // temp.push(vId);
     });
     setSongIdList(await temp);
     console.log(songIdList);
