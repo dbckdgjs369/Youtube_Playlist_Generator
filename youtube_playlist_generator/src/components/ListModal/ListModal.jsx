@@ -14,6 +14,12 @@ export default function ListModal(props) {
     );
   };
 
+  useEffect(() => {
+    // 모킹
+    fetch("/todos")
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  }, []);
   const songList = makeList(props.list.split("\n"));
 
   const onCheckedAll = useCallback(
