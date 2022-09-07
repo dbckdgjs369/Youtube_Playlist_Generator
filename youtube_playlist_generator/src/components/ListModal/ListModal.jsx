@@ -9,20 +9,17 @@ axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 export default function ListModal(props) {
   const { open, close } = props;
   const [checkedList, setCheckedLists] = useState([]);
+  const [songList, setSongList] = useState([]);
   const makeList = (songList) => {
     return songList.map((v) =>
       v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
     );
   };
 
+  // const songList = makeList(props.list.split("\n"));
   useEffect(() => {
-    // 모킹
-    fetch("/todos")
-      .then((response) => response.json())
-      .then((data) => console.log(data));
-  }, []);
-
-  const songList = makeList(props.list.split("\n"));
+    setSongList(makeList(props.list.split("\n")));
+  }, [props.list]);
 
   const onCheckedAll = useCallback(
     (checked) => {
@@ -66,24 +63,26 @@ export default function ListModal(props) {
 
   async function getSearchResult(checkedList) {
     const temp = [];
+    console.log(params);
     checkedList.forEach(async (song) => {
       params.q = song;
-      console.log(params);
-      const t = await axios
-        .get("/search", {
-          params,
-        })
-        .then((res) => temp.push(res.data.items[0].id.videoId));
-      // const vId = searchVideo(params);
-      // console.log(vId);
-      // temp.push(vId);
+      // const t = await axios //이게 진짜 코드
+      //   .get("/search", {
+      //     params,
+      //   })
+      //   .then((res) => temp.push(res.data.items[0].id.videoId));
+      // let vId = await fetch("/search")
+      //   .then((response) => response.json())
+      //   .then((data) => console.log(data));
     });
-    setSongIdList(await temp);
-    console.log(songIdList);
+    await fetch("/search") // 모킹 song 값들 넣어서 그냥 자체로 넣자
+      .then((response) => response.json())
+      .then((data) => setSongIdList(data));
   }
   useEffect(() => {
     console.log(songIdList);
   }, [songIdList]);
+
   return (
     <div className={open ? "openedModal" : "modal"}>
       {open ? (
