@@ -51,6 +51,10 @@ export default function MakePlaylistPage() {
 
   return (
     <div>
+      <div>
+        36:45 Rainbow Halo - 레드벨벳
+        <br /> 40:09 SMILEY (Ft. 비비) - 예나
+      </div>
       <div className="inputDiv">
         <h1>플레이리스트를 만들고 싶은 곡을 넣어주세요</h1>
         <textarea
