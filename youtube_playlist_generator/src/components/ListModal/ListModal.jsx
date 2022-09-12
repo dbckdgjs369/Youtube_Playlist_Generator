@@ -2,7 +2,6 @@ import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
-import { searchVideo } from "../../apis/Video/video";
 
 axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 
@@ -16,7 +15,6 @@ export default function ListModal(props) {
     );
   };
 
-  // const songList = makeList(props.list.split("\n"));
   useEffect(() => {
     setSongList(makeList(props.list.split("\n")));
   }, [props.list]);
@@ -29,7 +27,6 @@ export default function ListModal(props) {
         songList.forEach((list) =>
           list.length !== 0 ? checkedListArray.push(list) : null
         );
-        console.log(checkedListArray);
 
         setCheckedLists(checkedListArray);
       } else {
@@ -43,7 +40,6 @@ export default function ListModal(props) {
     (checked, value) => {
       if (checked) {
         setCheckedLists([...checkedList, value]);
-        console.log(checkedList);
       } else {
         setCheckedLists(checkedList.filter((el) => el !== value));
       }
@@ -63,25 +59,16 @@ export default function ListModal(props) {
 
   async function getSearchResult(checkedList) {
     const temp = [];
-    console.log(params);
     checkedList.forEach(async (song) => {
       params.q = song;
-      // const t = await axios //이게 진짜 코드
-      //   .get("/search", {
-      //     params,
-      //   })
-      //   .then((res) => temp.push(res.data.items[0].id.videoId));
-      // let vId = await fetch("/search")
-      //   .then((response) => response.json())
-      //   .then((data) => console.log(data));
+      const t = await axios //이게 진짜 코드
+        .get("/search", {
+          params,
+        })
+        .then((res) => temp.push(res.data.items[0].id.videoId));
     });
-    await fetch("/search") // 모킹 song 값들 넣어서 그냥 자체로 넣자
-      .then((response) => response.json())
-      .then((data) => setSongIdList(data));
+    setSongIdList(temp);
   }
-  useEffect(() => {
-    console.log(songIdList);
-  }, [songIdList]);
 
   return (
     <div className={open ? "openedModal" : "modal"}>
