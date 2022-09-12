@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { useEffect } from "react";
 import { UserContext } from "../../store/UserInfoContext";
 
 export default function GoogleLoginPage(props) {
@@ -8,14 +7,8 @@ export default function GoogleLoginPage(props) {
   const [playlistName, setPlaylistName] = useState("YPG");
   const API_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlists";
 
-  const { accessToken, authorization_code } = useContext(UserContext);
-  useEffect(() => {
-    console.log(authorization_code);
-    console.log(props.songIdList);
-  }, []);
-  useEffect(() => {
-    console.log(playlistId);
-  }, [playlistId]);
+  const { accessToken } = useContext(UserContext);
+
   async function makeNewPlayList() {
     console.log("access: " + accessToken);
     const description =
@@ -23,44 +16,17 @@ export default function GoogleLoginPage(props) {
     const add = axios.post(
       `${API_ENDPOINT}?access_token=${accessToken}&part=snippet,status&resource.snippet.title=${playlistName}&resource.snippet.description=${description}`
     );
-    // const add = await fetch("make", {
-    //   method: "POST",
-    // }).then((res) => res.json());
-
-    console.log(add);
     setPlaylistId((await add).data.id);
-    // setPlaylistId((await add).id);
   }
-  function addToPlayList() {
+
+  async function addToPlayList() {
     console.log(props.songIdList);
     console.log(accessToken);
-    Promise.all(
-      props.songIdList.forEach(
-        (element) => {
-          axios.post(
-            `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${element}&resource.snippet.resourceId.kind=youtube%23video`
-          );
-        }
-        // console.log(element)
-      )
-    );
-    // props.songIdList.forEach((element) =>
-    //   axios.post(`/playlistItems`, {
-    //     params: {
-    //       access_token: accessToken,
-    //       part: "snippet",
-    //       resource: {
-    //         snippet: {
-    //           playlistId: playlistId,
-    //           resourceId: {
-    //             videoId: element,
-    //             kind: "youtube%23video",
-    //           },
-    //         },
-    //       },
-    //     },
-    //   })
-    // );
+    for (const id of props.songIdList) {
+      await axios.post(
+        `https://www.googleapis.com/youtube/v3/playlistItems?access_token=${accessToken}&part=snippet&resource.snippet.playlistId=${playlistId}&resource.snippet.resourceId.videoId=${id}&resource.snippet.resourceId.kind=youtube%23video`
+      );
+    }
   }
 
   return (
