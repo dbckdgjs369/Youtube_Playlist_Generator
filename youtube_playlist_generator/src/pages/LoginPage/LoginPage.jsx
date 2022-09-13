@@ -9,11 +9,13 @@ console.log(url);
 export default function LoginPage() {
   return (
     <div className="Wrapper">
+      <img src="./youtube.png" width="50px" />
       <h1>Welcome to YouTube Playlist Generator!!</h1>
       <h2>Log in to the account you want to create a playlist for </h2>
 
       <button className="LoginBtn">
-        <a href={url}>Login </a>
+        <img src="./google.png" width="30px" />
+        <a href={url}>Sign in with Google </a>
       </button>
     </div>
   );
