@@ -1,17 +1,30 @@
 .Wrapper {
   display: flex;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
   gap: 30px;
+  justify-content: center;
 }
 
 .LoginBtn {
-  width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 300px;
   height: 50px;
-  font-size: 30px;
-  margin: 0 auto;
+  font-size: 20px;
+  background-color: white;
+  border: none;
+  box-shadow: 1px 1px 2px gray;
+  color: gray;
+  font-weight: 300;
+  cursor: pointer;
   a {
     text-decoration: none;
-    color: black;
+    color: gray;
+  }
+  &:hover {
+    background-color: #eee;
   }
 }
