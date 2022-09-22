@@ -12,10 +12,10 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 root.render(
   <CreateUserProvider>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
-      <App />
-    </QueryClientProvider>
+    {/* <QueryClientProvider client={queryClient}> */}
+    {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+    <App />
+    {/* </QueryClientProvider> */}
   </CreateUserProvider>
 );
 
