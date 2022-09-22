@@ -7,7 +7,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { CreateUserProvider } from "./store/UserInfoContext";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
 const queryClient = new QueryClient();
 root.render(
   // <React.StrictMode>
