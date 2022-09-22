@@ -3,7 +3,21 @@ import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import ListModal from "../../components/ListModal/ListModal";
 import { UserContext } from "../../store/UserInfoContext";
-import "./style.scss";
+import styled from "@emotion/styled";
+
+const InputDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const InputList = styled.textarea`
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 500px;
+  height: 500px;
+  border-radius: 10px;
+  padding: 20px;
+`;
 
 export default function MakePlaylistPage() {
   const [inputTextField, setInputTextField] = useState("");
@@ -55,17 +69,17 @@ export default function MakePlaylistPage() {
         36:45 Rainbow Halo - 레드벨벳
         <br /> 40:09 SMILEY (Ft. 비비) - 예나
       </div>
-      <div className="inputDiv">
+      <InputDiv>
         <h1>플레이리스트를 만들고 싶은 곡을 넣어주세요</h1>
-        <textarea
-          className="inputList"
+        <InputList
           placeholder="리스트를 넣어주세요"
           value={inputTextField}
           onChange={onChangeTextField}
-        ></textarea>
+        />
+        <li>a</li>
         <button onClick={buttonClick}>생성</button>
         <ListModal open={modalOpen} close={closeModal} list={inputTextField} />
-      </div>
+      </InputDiv>
     </div>
   );
 }
