@@ -1,46 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import Authorize from "../Authorize/Authorize";
 import "./style.scss";
 
-const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
-const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
-const REDIRECT_URI = "http://localhost:3000";
-const SCOPE = "https://www.googleapis.com/auth/youtube";
-const url = `${API_END_POINT}?access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
-const access_token_url = `https://oauth2.googleapis.com/token?code=${API_KEY}&clientid=${process.env.REACT_APP_CLIENT_ID}&clientsecret=${process.env.REACT_APP_CLIENT_SECRET}&redirect_uri=${REDIRECT_URI}&grant_type=authorization_code`;
-
-const scopes = [
-  "https://www.googleapis.com/auth/youtube",
-  "https://www.googleapis.com/auth/youtube.force-ssl",
-  "https://www.googleapis.com/auth/youtube.readonly",
-  "https://www.googleapis.com/auth/youtubepartner",
-];
-const resultArr = [];
-
-const DUMMY_VIDEO_ID_DATA = [
-  "HsZZMU4nm3U",
-  "Jh4QFaPmdss",
-  "R9At2ICm4LQ",
-  "3GWscde8rM8",
-  "xbLbHjeOvMo",
-];
+axios.defaults.baseURL = `https://www.googleapis.com/youtube/v3`;
 
 export default function ListModal(props) {
   const { open, close } = props;
-  const list = props.children;
-  const songList = [];
-  list.forEach((element) => {
-    const temp = element.props.children;
-    if (temp !== undefined) {
-      songList.push(temp[1]);
-    }
-  });
-  // console.log(songList);
-  // let songIdList = [];
-  const temp = [];
-  const [songIdList, setsongIdList] = useState([]);
+  const [checkedList, setCheckedLists] = useState([]);
+  const [songList, setSongList] = useState([]);
+  const makeList = (songList) => {
+    return songList.map((v) =>
+      v.replace(/([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/gi, " ").trim()
+    );
+  };
+
+  useEffect(() => {
+    setSongList(makeList(props.list.split("\n")));
+  }, [props.list]);
+
+  const onCheckedAll = useCallback(
+    (checked) => {
+      if (checked) {
+        const checkedListArray = [];
+
+        songList.forEach((list) =>
+          list.length !== 0 ? checkedListArray.push(list) : null
+        );
+
+        setCheckedLists(checkedListArray);
+      } else {
+        setCheckedLists([]);
+      }
+    },
+    [songList]
+  );
+
+  const onCheckedElement = useCallback(
+    (checked, value) => {
+      if (checked) {
+        setCheckedLists([...checkedList, value]);
+      } else {
+        setCheckedLists(checkedList.filter((el) => el !== value));
+      }
+    },
+    [checkedList]
+  );
+
+  const [songIdList, setSongIdList] = useState([]);
   const [query, setQuery] = useState("");
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
@@ -49,21 +56,18 @@ export default function ListModal(props) {
     maxResults: 1,
     type: "video",
   });
-  async function getSearchResult() {
-    songList.forEach(async (e) => {
-      params.q = e;
-      await axios
-        .get("https://www.googleapis.com/youtube/v3/search", {
+
+  async function getSearchResult(checkedList) {
+    const temp = [];
+    checkedList.forEach(async (song) => {
+      params.q = song;
+      const t = await axios //이게 진짜 코드
+        .get("/search", {
           params,
         })
-        .then((res) => songIdList.push(res.data.items[0].id.videoId));
-      // songIdList.push(videoId);
+        .then((res) => temp.push(res.data.items[0].id.videoId));
     });
-    // songIdList = new Set(...songIdList);
-    setsongIdList([...new Set(songIdList)]);
-    // set = [...new Set(songIdList)];
-    console.log(await songIdList);
-    return;
+    setSongIdList(temp);
   }
 
   return (
@@ -75,18 +79,41 @@ export default function ListModal(props) {
               close
             </button>
           </header>
-          <div className="contents">{props.children}</div>
+          <div className="songListDiv">
+            <input
+              type="checkbox"
+              onChange={(e) => onCheckedAll(e.target.checked)}
+              checked={
+                checkedList.length === 0
+                  ? false
+                  : checkedList.length === songList.length
+                  ? true
+                  : false
+              }
+            />
+            {makeList(songList).map((value, index) =>
+              !value ? (
+                <div key={index}></div>
+              ) : (
+                <div key={index}>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => onCheckedElement(e.target.checked, value)}
+                    checked={checkedList.includes(value) ? true : false}
+                  />
+                  {value}
+                </div>
+              )
+            )}
+          </div>
           <div>
-            <button class="createBtn" onClick={() => getSearchResult()}>
-              Create!
+            <br />
+            <button
+              className="createBtn"
+              onClick={() => getSearchResult(checkedList)}
+            >
+              Get Viedo IDs
             </button>
-            <button className="closeBtn" onClick={close}>
-              close
-            </button>
-            <button className="allBtn">All</button>
-            <a href={url}>
-              <button>login</button>
-            </a>
           </div>
           <div>
             <Authorize songIdList={songIdList} />
