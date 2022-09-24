@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { UserContext } from "../../store/UserInfoContext";
 import styled from "@emotion/styled";
 import axios from "axios";
 import Button from "components/Button/Button";
+import { makeList } from "../../utils/removeTime";
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,7 +56,9 @@ type ModeProps = "generate" | "edit";
 
 export default function MakePlayListPage() {
   const [authorizationCode, setAuthorizationCode] = useState("");
+  const [songList, setSongList] = useState<string[]>([]);
   const REDIRECT_URI = "http://localhost:3000/create";
+  const textRef = useRef<HTMLTextAreaElement | null>(null);
   const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   async function getAccessToken() {
@@ -83,16 +86,24 @@ export default function MakePlayListPage() {
 
   const clickGen = () => {
     setMode("edit");
+    const list = textRef.current?.value;
+    console.log(list);
+    if (list !== undefined) {
+      setSongList(makeList(list.split("\n")));
+    }
   };
   const clickEdit = () => {
     setMode("generate");
   };
 
+  useEffect(() => {
+    console.log(songList);
+  }, [songList]);
   return (
     <Wrapper>
       <Title>타임라인 넣어주세요</Title>
       <ContentDiv>
-        <TextBox />
+        <TextBox ref={textRef} disabled={mode === "edit"} />
         <ButtonWrapper>
           {mode === "generate" ? (
             <Button buttonType="large" colorType="aqua" onClick={clickGen}>
