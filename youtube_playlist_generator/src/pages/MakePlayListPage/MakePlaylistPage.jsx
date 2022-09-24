@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useEffect } from "react";
 import ListModal from "../../components/ListModal/ListModal";
 import { UserContext } from "../../store/UserInfoContext";
@@ -17,6 +17,7 @@ const InputList = styled.textarea`
   height: 500px;
   border-radius: 10px;
   padding: 20px;
+  resize: none;
 `;
 
 export default function MakePlaylistPage() {
@@ -49,18 +50,16 @@ export default function MakePlaylistPage() {
       grant_type: "authorization_code",
     });
     setAccessToken((await token).data.access_token);
-    console.log(authorization_code);
-    console.log(accessToken);
   }
+
   useEffect(() => {
     const auth = new URLSearchParams(window.location.search).get("code");
     setAuthorization_code(auth);
-    console.log(authorization_code);
     window.history.pushState("", "createPage", "/create");
   }, []);
+
   useEffect(() => {
     getAccessToken();
-    console.log(accessToken);
   }, [authorization_code]);
 
   return (
