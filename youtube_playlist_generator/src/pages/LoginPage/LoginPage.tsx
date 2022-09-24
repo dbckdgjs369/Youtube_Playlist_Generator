@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import Loading from "components/Loading/Loading";
 
 const Wrapper = styled.div`
   display: flex;
@@ -47,6 +48,7 @@ export default function LoginPage() {
         <img src="./images/google.png" width="30px" />
         <a href={url}>Sign in with Google </a>
       </LoginBtn>
+      <Loading />
     </Wrapper>
   );
 }
