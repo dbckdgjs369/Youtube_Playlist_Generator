@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import MakePlaylistPage from "./pages/MakePlayListPage/MakePlaylistPage";
+// import MakePlaylistPage from "./pages/MakePlayListPage/MakePlaylistPage";
+
+import GeneratePlayListPage from "./pages/MakePlayListPage/GeneratePlayListPage";
 import { worker } from "./mocks/server";
 import "./styles/reset.css";
 
@@ -14,7 +16,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/create" element={<MakePlaylistPage />} />
+          {/* <Route path="/create" element={<MakePlaylistPage />} /> */}
+          <Route path="/create" element={<GeneratePlayListPage />} />
         </Routes>
       </BrowserRouter>
     </div>
