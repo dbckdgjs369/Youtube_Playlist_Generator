@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import Button from "components/Button/Button";
 import { makeList } from "../../utils/removeTime";
+import SelectBox from "components/SelectBox/SelectBox";
 
 const Wrapper = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const TextBox = styled.textarea`
   border-radius: 8px;
   resize: none;
   padding: 20px;
+  line-height: 1.5rem;
 `;
 
 const Title = styled.h1`
@@ -115,7 +117,7 @@ export default function MakePlayListPage() {
             </Button>
           )}
         </ButtonWrapper>
-        <ResultDiv />
+        <SelectBox songList={songList.filter((element) => element !== "")} />
       </ContentDiv>
       <InputWrapper>
         <label>플레이리스트 제목을 입력해주세요</label>
