@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   height: 400px;
   border-radius: 8px;
   padding: 20px;
-  overflow: scroll;
+  overflow: auto;
   overflow-x: hidden;
   line-height: 1.5rem;
 `;
@@ -55,7 +55,9 @@ export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
             onChange={(e) => handleAllCheck(e.target.checked)}
             checked={checkItems.length === songList.length}
           />
-          <StyledLabel>전체 선택</StyledLabel>
+          <StyledLabel>
+            전체 선택 ( {checkItems.length} / {songList.length} )
+          </StyledLabel>
         </RowElement>
       ) : null}
       {songList.map((value, index) =>

@@ -33,14 +33,6 @@ const ContentDiv = styled.div`
   gap: 20px;
 `;
 
-const ResultDiv = styled.div`
-  border: 1px solid;
-  width: 400px;
-  height: 400px;
-  border-radius: 8px;
-  padding: 20px;
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -91,7 +83,7 @@ export default function MakePlayListPage() {
     const list = textRef.current?.value;
     console.log(list);
     if (list !== undefined) {
-      setSongList(makeList(list.split("\n")));
+      setSongList([...new Set(makeList(list.split("\n")))]);
     }
   };
   const clickEdit = () => {
