@@ -23,12 +23,13 @@ const StyledLabel = styled.label`
 
 interface SelectBoxProps {
   songList: string[];
-  setCheckValue?: string[];
+  setCheckValue: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
-  const [checkItems, setCheckItems] = useState<number[]>([]);
-  const handleSingleCheck = (checked: boolean, id: number) => {
+  const [checkItems, setCheckItems] = useState<string[]>([]);
+  const handleSingleCheck = (checked: boolean, id: string) => {
+    console.log(id);
     if (checked) {
       setCheckItems((prev) => [...prev, id]);
     } else {
@@ -38,13 +39,16 @@ export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
 
   const handleAllCheck = (checked: boolean) => {
     if (checked) {
-      const idArray = [] as number[];
-      songList.forEach((_, index) => idArray.push(index));
+      const idArray = [] as string[];
+      songList.forEach((value) => idArray.push(value));
       setCheckItems(idArray);
     } else {
       setCheckItems([]);
     }
   };
+  useEffect(() => {
+    setCheckValue(checkItems);
+  }, [checkItems]);
 
   return (
     <Wrapper>
@@ -67,8 +71,8 @@ export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
           <div key={index}>
             <input
               type="checkbox"
-              onChange={(e) => handleSingleCheck(e.target.checked, index)}
-              checked={checkItems.includes(index)}
+              onChange={(e) => handleSingleCheck(e.target.checked, value)}
+              checked={checkItems.includes(value)}
             />
             {value}
           </div>
