@@ -6,6 +6,8 @@ import Button from "components/Button/Button";
 import { makeList } from "../../utils/removeTime";
 import SelectBox from "components/SelectBox/SelectBox";
 import { text } from "styles/theme";
+import { createNewPlayList } from "apis/Playlist/playlist";
+import { searchVideo } from "apis/Video/video";
 
 const Wrapper = styled.div`
   display: flex;
@@ -74,6 +76,14 @@ export default function MakePlayListPage() {
   const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
+  const [title, setTitle] = useState<string>("YPG");
+  const [params, setParams] = useState({
+    key: process.env.REACT_APP_YOUTUBE_API_KEY,
+    part: "snippet",
+    q: "",
+    maxResults: 1,
+    type: "video",
+  });
 
   async function getAccessToken() {
     const token = axios.post("https://oauth2.googleapis.com/token", {
@@ -109,10 +119,20 @@ export default function MakePlayListPage() {
   const clickEdit = () => {
     setMode("generate");
   };
+
   const createPlayList = () => {
-    // 받은 플레이 리스트 목록 vid찾기
-    // 입력받은 플리 제목 받고, 이걸로 플리 생성
-    // 플리에 vid 넣기
+    // [] 받은 플레이 리스트 목록 vid찾기
+    // [o] 입력받은 플리 제목 받고, 이걸로 플리 생성
+    // [] 플리에 vid 넣기
+    // if (inputRef.current) {
+    //   createNewPlayList(inputRef.current.value, accessToken);
+    // }
+    checkValue.forEach(async (song) => {
+      params.q = song;
+      const data = await searchVideo(params);
+      console.log(await data.items[0].id.videoId);
+    });
+    searchVideo(params);
   };
 
   return (
@@ -139,7 +159,7 @@ export default function MakePlayListPage() {
       <InputWrapper>
         <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
         <InputDiv>
-          <StyledInput ref={inputRef} />
+          <StyledInput ref={inputRef} placeholder="ex) YPG" />
           <Button
             buttonType="large"
             colorType="aqua"
