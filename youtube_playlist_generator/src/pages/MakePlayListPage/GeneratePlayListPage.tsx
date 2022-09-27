@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 50px;
   margin-top: 30px;
+  /* opacity: 0.5; */
 `;
 
 const TextBox = styled.textarea`
@@ -130,7 +131,10 @@ export default function MakePlayListPage() {
 
     let playlistId = "";
     if (inputRef.current) {
-      const data = createNewPlayList(inputRef.current.value, accessToken);
+      const data = createNewPlayList(
+        (inputRef.current.value = "YPG"),
+        accessToken
+      );
       playlistId = (await data).data.id;
       console.log(playlistId);
     }
@@ -149,6 +153,7 @@ export default function MakePlayListPage() {
         console.error(error);
       }
     }
+    console.log("click");
   };
   useEffect(() => {
     console.log(checkValue);
@@ -156,32 +161,35 @@ export default function MakePlayListPage() {
   return (
     <Wrapper>
       <Title>타임라인 넣어주세요</Title>
-      {loading ? (
-        <Loading />
-      ) : (
-        <ContentDiv>
-          <TextBox ref={textRef} disabled={mode === "edit"} />
-          <ButtonWrapper>
-            {mode === "generate" ? (
-              <Button
-                buttonType="large"
-                colorType="aqua"
-                onClick={clickGenerate}
-              >
-                리스트 생성
-              </Button>
-            ) : (
-              <Button buttonType="large" colorType="aqua" onClick={clickEdit}>
-                리스트 편집
-              </Button>
-            )}
-          </ButtonWrapper>
-          <SelectBox
-            songList={songList.filter((element) => element !== "")}
-            setCheckValue={setCheckValue}
-          />
-        </ContentDiv>
-      )}
+      {loading ? <Loading /> : null}
+      <ContentDiv>
+        <TextBox ref={textRef} disabled={mode === "edit"} />
+        <ButtonWrapper>
+          {mode === "generate" ? (
+            <Button
+              buttonType="large"
+              colorType="aqua"
+              onClick={clickGenerate}
+              disabled={loading}
+            >
+              리스트 생성
+            </Button>
+          ) : (
+            <Button
+              buttonType="large"
+              colorType="aqua"
+              onClick={clickEdit}
+              disabled={loading}
+            >
+              리스트 편집
+            </Button>
+          )}
+        </ButtonWrapper>
+        <SelectBox
+          songList={songList.filter((element) => element !== "")}
+          setCheckValue={setCheckValue}
+        />
+      </ContentDiv>
       <InputWrapper>
         <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
         <InputDiv>
@@ -191,6 +199,7 @@ export default function MakePlayListPage() {
             colorType="aqua"
             width="50"
             onClick={createPlayList}
+            disabled={loading}
           >
             생성
           </Button>
