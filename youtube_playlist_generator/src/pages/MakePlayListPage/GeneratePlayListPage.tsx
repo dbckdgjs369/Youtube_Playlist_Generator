@@ -6,7 +6,7 @@ import Button from "components/Button/Button";
 import { makeList } from "../../utils/removeTime";
 import SelectBox from "components/SelectBox/SelectBox";
 import { text } from "styles/theme";
-import { createNewPlayList } from "apis/Playlist/playlist";
+import { addToPlayList, createNewPlayList } from "apis/Playlist/playlist";
 import { searchVideo } from "apis/Video/video";
 
 const Wrapper = styled.div`
@@ -120,19 +120,28 @@ export default function MakePlayListPage() {
     setMode("generate");
   };
 
-  const createPlayList = () => {
-    // [] 받은 플레이 리스트 목록 vid찾기
+  const createPlayList = async () => {
+    // [o] 받은 플레이 리스트 목록 vid찾기
     // [o] 입력받은 플리 제목 받고, 이걸로 플리 생성
-    // [] 플리에 vid 넣기
-    // if (inputRef.current) {
-    //   createNewPlayList(inputRef.current.value, accessToken);
-    // }
-    checkValue.forEach(async (song) => {
+    // [o] 플리에 vid 넣기
+    let playlistId = "";
+    if (inputRef.current) {
+      const data = createNewPlayList(inputRef.current.value, accessToken);
+      playlistId = (await data).data.id;
+      console.log(playlistId);
+    }
+    for (const song of checkValue) {
       params.q = song;
       const data = await searchVideo(params);
-      console.log(await data.items[0].id.videoId);
-    });
-    searchVideo(params);
+      const vid = data.items[0].id.videoId;
+      try {
+        setTimeout(() => {
+          addToPlayList(accessToken, playlistId, vid);
+        }, 500);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
   return (
