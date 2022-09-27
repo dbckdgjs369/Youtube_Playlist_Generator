@@ -8,6 +8,7 @@ import SelectBox from "components/SelectBox/SelectBox";
 import { text } from "styles/theme";
 import { addToPlayList, createNewPlayList } from "apis/Playlist/playlist";
 import { searchVideo } from "apis/Video/video";
+import Loading from "components/Loading/Loading";
 
 const Wrapper = styled.div`
   display: flex;
@@ -77,6 +78,7 @@ export default function MakePlayListPage() {
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
   const [title, setTitle] = useState<string>("YPG");
+  const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
     part: "snippet",
@@ -124,47 +126,62 @@ export default function MakePlayListPage() {
     // [o] 받은 플레이 리스트 목록 vid찾기
     // [o] 입력받은 플리 제목 받고, 이걸로 플리 생성
     // [o] 플리에 vid 넣기
+    // 로딩 넣기
+
     let playlistId = "";
     if (inputRef.current) {
       const data = createNewPlayList(inputRef.current.value, accessToken);
       playlistId = (await data).data.id;
       console.log(playlistId);
     }
+
     for (const song of checkValue) {
       params.q = song;
       const data = await searchVideo(params);
       const vid = data.items[0].id.videoId;
+      setLoading(true);
       try {
         setTimeout(() => {
+          setLoading(false);
           addToPlayList(accessToken, playlistId, vid);
-        }, 500);
+        }, 2000);
       } catch (error) {
         console.error(error);
       }
     }
   };
-
+  useEffect(() => {
+    console.log(checkValue);
+  }, [checkValue]);
   return (
     <Wrapper>
       <Title>타임라인 넣어주세요</Title>
-      <ContentDiv>
-        <TextBox ref={textRef} disabled={mode === "edit"} />
-        <ButtonWrapper>
-          {mode === "generate" ? (
-            <Button buttonType="large" colorType="aqua" onClick={clickGenerate}>
-              리스트 생성
-            </Button>
-          ) : (
-            <Button buttonType="large" colorType="aqua" onClick={clickEdit}>
-              리스트 편집
-            </Button>
-          )}
-        </ButtonWrapper>
-        <SelectBox
-          songList={songList.filter((element) => element !== "")}
-          setCheckValue={setCheckValue}
-        />
-      </ContentDiv>
+      {loading ? (
+        <Loading />
+      ) : (
+        <ContentDiv>
+          <TextBox ref={textRef} disabled={mode === "edit"} />
+          <ButtonWrapper>
+            {mode === "generate" ? (
+              <Button
+                buttonType="large"
+                colorType="aqua"
+                onClick={clickGenerate}
+              >
+                리스트 생성
+              </Button>
+            ) : (
+              <Button buttonType="large" colorType="aqua" onClick={clickEdit}>
+                리스트 편집
+              </Button>
+            )}
+          </ButtonWrapper>
+          <SelectBox
+            songList={songList.filter((element) => element !== "")}
+            setCheckValue={setCheckValue}
+          />
+        </ContentDiv>
+      )}
       <InputWrapper>
         <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
         <InputDiv>

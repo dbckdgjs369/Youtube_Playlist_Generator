@@ -48,7 +48,6 @@ export default function LoginPage() {
         <img src="./images/google.png" width="30px" />
         <a href={url}>Sign in with Google </a>
       </LoginBtn>
-      <Loading />
     </Wrapper>
   );
 }
