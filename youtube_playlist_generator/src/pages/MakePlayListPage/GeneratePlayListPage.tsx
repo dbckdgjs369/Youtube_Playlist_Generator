@@ -8,6 +8,7 @@ import SelectBox from "components/SelectBox/SelectBox";
 import { text } from "styles/theme";
 import { addToPlayList, createNewPlayList } from "apis/Playlist/playlist";
 import { searchVideo } from "apis/Video/video";
+import Loading from "components/Loading/Loading";
 
 const Wrapper = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 50px;
   margin-top: 30px;
+  /* opacity: 0.5; */
 `;
 
 const TextBox = styled.textarea`
@@ -76,7 +78,7 @@ export default function MakePlayListPage() {
   const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("YPG");
+  const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
     part: "snippet",
@@ -121,12 +123,12 @@ export default function MakePlayListPage() {
   };
 
   const createPlayList = async () => {
-    // [o] 받은 플레이 리스트 목록 vid찾기
-    // [o] 입력받은 플리 제목 받고, 이걸로 플리 생성
-    // [o] 플리에 vid 넣기
     let playlistId = "";
     if (inputRef.current) {
-      const data = createNewPlayList(inputRef.current.value, accessToken);
+      const data = createNewPlayList(
+        (inputRef.current.value = "YPG"),
+        accessToken
+      );
       playlistId = (await data).data.id;
       console.log(playlistId);
     }
@@ -134,10 +136,12 @@ export default function MakePlayListPage() {
       params.q = song;
       const data = await searchVideo(params);
       const vid = data.items[0].id.videoId;
+      setLoading(true);
       try {
         setTimeout(() => {
+          setLoading(false);
           addToPlayList(accessToken, playlistId, vid);
-        }, 500);
+        }, 2000);
       } catch (error) {
         console.error(error);
       }
@@ -147,15 +151,26 @@ export default function MakePlayListPage() {
   return (
     <Wrapper>
       <Title>타임라인 넣어주세요</Title>
+      {loading ? <Loading /> : null}
       <ContentDiv>
         <TextBox ref={textRef} disabled={mode === "edit"} />
         <ButtonWrapper>
           {mode === "generate" ? (
-            <Button buttonType="large" colorType="aqua" onClick={clickGenerate}>
+            <Button
+              buttonType="large"
+              colorType="aqua"
+              onClick={clickGenerate}
+              disabled={loading}
+            >
               리스트 생성
             </Button>
           ) : (
-            <Button buttonType="large" colorType="aqua" onClick={clickEdit}>
+            <Button
+              buttonType="large"
+              colorType="aqua"
+              onClick={clickEdit}
+              disabled={loading}
+            >
               리스트 편집
             </Button>
           )}
@@ -174,6 +189,7 @@ export default function MakePlayListPage() {
             colorType="aqua"
             width="50"
             onClick={createPlayList}
+            disabled={loading}
           >
             생성
           </Button>
