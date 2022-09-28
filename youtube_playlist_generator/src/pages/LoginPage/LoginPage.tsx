@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import Loading from "components/Loading/Loading";
 
 const Wrapper = styled.div`
   display: flex;
