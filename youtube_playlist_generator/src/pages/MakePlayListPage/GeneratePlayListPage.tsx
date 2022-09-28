@@ -78,7 +78,6 @@ export default function MakePlayListPage() {
   const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
-  const [title, setTitle] = useState<string>("YPG");
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
@@ -124,11 +123,6 @@ export default function MakePlayListPage() {
   };
 
   const createPlayList = async () => {
-    // [o] 받은 플레이 리스트 목록 vid찾기
-    // [o] 입력받은 플리 제목 받고, 이걸로 플리 생성
-    // [o] 플리에 vid 넣기
-    // 로딩 넣기
-
     let playlistId = "";
     if (inputRef.current) {
       const data = createNewPlayList(
@@ -138,7 +132,6 @@ export default function MakePlayListPage() {
       playlistId = (await data).data.id;
       console.log(playlistId);
     }
-
     for (const song of checkValue) {
       params.q = song;
       const data = await searchVideo(params);
@@ -153,11 +146,8 @@ export default function MakePlayListPage() {
         console.error(error);
       }
     }
-    console.log("click");
   };
-  useEffect(() => {
-    console.log(checkValue);
-  }, [checkValue]);
+
   return (
     <Wrapper>
       <Title>타임라인 넣어주세요</Title>
