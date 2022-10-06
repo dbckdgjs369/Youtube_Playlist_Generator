@@ -21,5 +21,5 @@
 ![image](https://user-images.githubusercontent.com/49175629/194236937-77abdc72-5e42-46de-a1d9-e81d11dbfe23.png)
 4. 플레이리스트 이름을 넣어주고 생성 버튼을 누릅니다. (default: YPG)
 ![image](https://user-images.githubusercontent.com/49175629/194237303-1511d04b-d464-495c-928c-bfd9ef9fdef9.png)
-
+5. 플레이리스트 
 
