@@ -29,7 +29,7 @@
 **Frontend**
 
 <!--<image src="https://user-images.githubusercontent.com/49175629/184593189-6cc4d800-e659-4ba8-bebe-23d8da244033.png" width="300px"/> -->
-- ![title](https://img.shields.io/badge/-ReactJS-181717?&logo=react.js&logoColor=white)
+- ![title](https://img.shields.io/badge/-ReactJS-61DAFB?&logo=react&logoColor=white)
 - ![title](https://img.shields.io/badge/-TypeScript-3178C6?&logo=typescript&logoColor=white)
 - ![title](https://img.shields.io/badge/-Emotion-DCA0D7?&logo=emotion&logoColor=white)
 - ![title](https://img.shields.io/badge/-MSW-4B32C3?&logo=MSW&logoColor=white)
