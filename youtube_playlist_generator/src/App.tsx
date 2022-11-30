@@ -3,12 +3,12 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 // import MakePlaylistPage from "./pages/MakePlayListPage/MakePlaylistPage";
 
 import GeneratePlayListPage from "./pages/MakePlayListPage/GeneratePlayListPage";
-import { worker } from "./mocks/server";
+// import { worker } from "./mocks/server";
 import "./styles/reset.css";
 
-if (process.env.NODE_ENV === "development") {
-  worker.start();
-}
+// if (process.env.NODE_ENV === "development") {
+//   worker.start();
+// }
 
 function App() {
   return (

@@ -88,6 +88,7 @@ export default function MakePlayListPage() {
   });
 
   async function getAccessToken() {
+    console.log(authorizationCode);
     const token = axios.post("https://oauth2.googleapis.com/token", {
       client_id: process.env.REACT_APP_CLIENT_ID,
       client_secret: process.env.REACT_APP_CLIENT_SECRET,
@@ -95,11 +96,14 @@ export default function MakePlayListPage() {
       code: authorizationCode,
       grant_type: "authorization_code",
     });
+    console.log(await token);
     setAccessToken((await token).data.access_token);
+    sessionStorage.setItem("accessToken", (await token).data.access_token);
   }
 
   useEffect(() => {
     const auth = new URLSearchParams(window.location.search).get("code");
+    console.log(auth);
     if (auth !== null) {
       setAuthorizationCode(auth);
     }
@@ -107,7 +111,10 @@ export default function MakePlayListPage() {
   }, []);
 
   useEffect(() => {
-    getAccessToken();
+    if (authorizationCode !== "") {
+      getAccessToken();
+      console.log(authorizationCode);
+    }
   }, [authorizationCode]);
 
   const clickGenerate = () => {
@@ -123,6 +130,7 @@ export default function MakePlayListPage() {
   };
 
   const createPlayList = async () => {
+    console.log(accessToken);
     let playlistId = "";
     if (inputRef.current) {
       const data = createNewPlayList(
