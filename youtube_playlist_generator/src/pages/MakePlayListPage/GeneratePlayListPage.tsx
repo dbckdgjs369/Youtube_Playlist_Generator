@@ -69,6 +69,53 @@ const StyledLabel = styled.label`
 
 type ModeProps = "generate" | "edit";
 
+type id = {
+  kind: "youtube#searchListResponse";
+  etag: "9FM6D7uLfWa0rv-TAYGrqlG9IqE";
+  nextPageToken: "CAEQAA";
+  regionCode: "KR";
+  pageInfo: {
+    totalResults: 1000000;
+    resultsPerPage: 1;
+  };
+  items: [
+    {
+      kind: "youtube#searchResult";
+      etag: "KK6FVSJX7mGZrqI3d2gb9WgPgJA";
+      id: {
+        kind: "youtube#video";
+        videoId: "pC7Z0TnvIs0";
+      };
+      snippet: {
+        publishedAt: "2021-06-01T06:54:19Z";
+        channelId: "UCeYzCeywt-0vT-lReSNxK0Q";
+        title: "JOY (조이) – Hello (안녕) Lyrics (Color Coded Han/Rom/Eng)";
+        description: "Artist: JOY (조이) Song: Hello (안녕) Album: 'Hello' Solo Debut Special Album Lyrics: ColorCodedLyrics (from ...";
+        thumbnails: {
+          default: {
+            url: "https://i.ytimg.com/vi/pC7Z0TnvIs0/default.jpg";
+            width: 120;
+            height: 90;
+          };
+          medium: {
+            url: "https://i.ytimg.com/vi/pC7Z0TnvIs0/mqdefault.jpg";
+            width: 320;
+            height: 180;
+          };
+          high: {
+            url: "https://i.ytimg.com/vi/pC7Z0TnvIs0/hqdefault.jpg";
+            width: 480;
+            height: 360;
+          };
+        };
+        channelTitle: "lovelyeonwoo";
+        liveBroadcastContent: "none";
+        publishTime: "2021-06-01T06:54:19Z";
+      };
+    }
+  ];
+};
+
 export default function MakePlayListPage() {
   const [authorizationCode, setAuthorizationCode] = useState("");
   const [songList, setSongList] = useState<string[]>([]);
@@ -86,6 +133,7 @@ export default function MakePlayListPage() {
     maxResults: 1,
     type: "video",
   });
+  const [idArr, setIdArr] = useState<id[]>([]);
 
   async function getAccessToken() {
     console.log(authorizationCode);
@@ -129,31 +177,79 @@ export default function MakePlayListPage() {
     setMode("generate");
   };
 
+  // const createPlayList = async () => {
+  //   console.log(accessToken);
+  //   let playlistId = "";
+  //   if (inputRef.current) {
+  //     const data = createNewPlayList(inputRef.current.value, accessToken);
+  //     playlistId = (await data).data.id;
+  //     console.log(playlistId);
+  //   }
+  //   // for (const song of checkValue) {
+  //   //   params.q = song;
+  //   //   const data = await searchVideo(params);
+  //   //   const vid = data.items[0].id.videoId;
+  //   //   setLoading(true);
+  //   //   try {
+  //   //     setTimeout(() => {
+  //   //       setLoading(false);
+  //   //       addToPlayList(accessToken, playlistId, vid);
+  //   //     }, 2000);
+  //   //   } catch (error) {
+  //   //     console.error(error);
+  //   //   }
+  //   // }
+
+  //   for (const song of checkValue) {
+  //     params.q = song;
+  //     await searchVideo(params).then((res) =>
+  //       addToPlayList(accessToken, playlistId, res.items[0].id.videoId)
+  //     );
+  //   }
+
+  //   // const promiseArr = checkValue.map((song) => {
+  //   //   params.q = song;
+  //   //   searchVideo(params).then((res) => res.json());
+  //   // });
+  //   // await Promise.all(promiseArr);
+  //   // const promsieArr = todoIdList.map((id) =>
+  //   //   fetch(`https://jsonplaceholder.typicode.com/todos/${id}`).then((res) =>
+  //   //     res.json()
+  //   //   )
+  //   // );
+  //   // console.log(promsieArr);
+  //   // const result = await Promise.all(promsieArr);
+
+  //   // const promiseResult = checkValue.map((song) => {
+  //   //   params.q = song;
+  //   //   return searchVideo(params);
+  //   // });
+  //   // const result = await Promise.all(promiseResult).then((res) =>
+  //   //   res.forEach((e) =>
+  //   //     addToPlayList(accessToken, playlistId, e.items[0].id.videoId)
+  //   //   )
+  //   // );
+  // };
   const createPlayList = async () => {
-    console.log(accessToken);
     let playlistId = "";
     if (inputRef.current) {
-      const data = createNewPlayList(
-        (inputRef.current.value = "YPG"),
-        accessToken
-      );
+      const data = createNewPlayList(inputRef.current.value, accessToken);
       playlistId = (await data).data.id;
       console.log(playlistId);
     }
-    for (const song of checkValue) {
-      params.q = song;
-      const data = await searchVideo(params);
-      const vid = data.items[0].id.videoId;
-      setLoading(true);
-      try {
-        setTimeout(() => {
-          setLoading(false);
-          addToPlayList(accessToken, playlistId, vid);
-        }, 2000);
-      } catch (error) {
-        console.error(error);
-      }
+
+    for (const id of idArr) {
+      await addToPlayList(accessToken, playlistId, id.items[0].id.videoId);
     }
+  };
+  const getIdArr = async () => {
+    const promiseResult = checkValue.map((song) => {
+      params.q = song;
+      return searchVideo(params);
+    });
+    const result = await Promise.all(promiseResult);
+    console.log(result);
+    setIdArr(result);
   };
 
   return (
@@ -187,6 +283,9 @@ export default function MakePlayListPage() {
           songList={songList.filter((element) => element !== "")}
           setCheckValue={setCheckValue}
         />
+        <Button buttonType="large" colorType="aqua" onClick={getIdArr}>
+          곡 id 가져오기
+        </Button>
       </ContentDiv>
       <InputWrapper>
         <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
