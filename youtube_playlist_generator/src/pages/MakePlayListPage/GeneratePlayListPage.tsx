@@ -1,5 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { UserContext } from "../../store/UserInfoContext";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import axios from "axios";
 import Button from "components/Button/Button";
@@ -46,14 +45,12 @@ const ButtonWrapper = styled.div`
 `;
 
 type ModeProps = "generate" | "edit";
+const REDIRECT_URI = "http://localhost:3000/create";
 
 export default function MakePlayListPage() {
   const [authorizationCode, setAuthorizationCode] = useState("");
   const [songList, setSongList] = useState<string[]>([]);
-  const REDIRECT_URI = "http://localhost:3000/create";
   const textRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
   const [loading] = useState(false);
@@ -66,36 +63,30 @@ export default function MakePlayListPage() {
   });
   const [idArr, setIdArr] = useState<VideoInfo[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
 
-  async function getAccessToken() {
+  async function getAccessToken(code: string) {
     console.log(authorizationCode);
-    const token = axios.post("https://oauth2.googleapis.com/token", {
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      client_secret: process.env.REACT_APP_CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code: authorizationCode,
-      grant_type: "authorization_code",
-    });
-    console.log(await token);
-    setAccessToken((await token).data.access_token);
-    sessionStorage.setItem("accessToken", (await token).data.access_token);
+    const token = await axios
+      .post("https://oauth2.googleapis.com/token", {
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        client_secret: process.env.REACT_APP_CLIENT_SECRET,
+        redirect_uri: REDIRECT_URI,
+        code: code,
+        grant_type: "authorization_code",
+      })
+      .then((res) => res.data.access_token);
+    setAccessToken(token);
   }
 
   useEffect(() => {
     const auth = new URLSearchParams(window.location.search).get("code");
     console.log(auth);
-    if (auth !== null) {
-      setAuthorizationCode(auth);
+    if (auth) {
+      getAccessToken(auth);
     }
     window.history.pushState("", "createPage", "/create");
   }, []);
-
-  useEffect(() => {
-    if (authorizationCode !== "") {
-      getAccessToken();
-      console.log(authorizationCode);
-    }
-  }, [authorizationCode]);
 
   const clickGenerate = () => {
     setMode("edit");
@@ -162,7 +153,11 @@ export default function MakePlayListPage() {
       </Button>
       {modalOpen ? (
         // <Modal setModalOpen={setModalOpen} songInfoArr={dummy as VideoInfo[]} />
-        <Modal setModalOpen={setModalOpen} songInfoArr={idArr} />
+        <Modal
+          setModalOpen={setModalOpen}
+          songInfoArr={idArr}
+          accessToken={accessToken}
+        />
       ) : null}
     </Wrapper>
   );
