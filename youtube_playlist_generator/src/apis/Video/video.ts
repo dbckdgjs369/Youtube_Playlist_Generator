@@ -1,6 +1,4 @@
 import axios from "axios";
-import { useContext } from "react";
-import { UserContext } from "../../store/UserInfoContext";
 
 // const searchVideo = async (params) => {
 //   console.log(params);

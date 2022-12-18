@@ -77,11 +77,9 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
   }, []);
   const createPlayList = async () => {
     let playlistId = "";
-    let playlistTitle = "";
-    if (inputRef.current) {
-      if (inputRef.current.value === "") {
-        playlistTitle = "YPG";
-      }
+    if (inputRef.current !== null) {
+      const playlistTitle =
+        inputRef.current.value === "" ? "YPG" : inputRef.current.value;
       const data = createNewPlayList(playlistTitle, accessToken);
       playlistId = (await data).data.id;
     }
