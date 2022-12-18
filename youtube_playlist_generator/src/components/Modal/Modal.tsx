@@ -9,6 +9,7 @@ import SongItem from "./SongItem";
 interface ModalProps {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   songInfoArr: VideoInfo[];
+  accessToken: string;
 }
 
 const ModalWrapper = styled.div`
@@ -56,13 +57,11 @@ const StyledLabel = styled.label`
   ${text.$body1}
 `;
 
-const Modal = ({ setModalOpen, songInfoArr }: ModalProps) => {
+const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const closeModal = () => {
     setModalOpen(false);
   };
-  // const { accessToken, setAccessToken } = useContext(UserContext);
-  const accessToken = sessionStorage.getItem("accessToken") as string;
 
   useEffect(() => {
     document.body.style.cssText = `
@@ -78,10 +77,11 @@ const Modal = ({ setModalOpen, songInfoArr }: ModalProps) => {
   }, []);
   const createPlayList = async () => {
     let playlistId = "";
-    if (inputRef.current) {
-      const data = createNewPlayList(inputRef.current.value, accessToken);
+    if (inputRef.current !== null) {
+      const playlistTitle =
+        inputRef.current.value === "" ? "YPG" : inputRef.current.value;
+      const data = createNewPlayList(playlistTitle, accessToken);
       playlistId = (await data).data.id;
-      console.log(playlistId);
     }
 
     for (const id of songInfoArr) {
@@ -92,26 +92,32 @@ const Modal = ({ setModalOpen, songInfoArr }: ModalProps) => {
   return (
     <ModalWrapper onClick={closeModal}>
       <ModalBody onClick={(e) => e.stopPropagation()}>
-        {songInfoArr.map((e) => (
-          <SongItem
-            src={e.items[0].snippet.thumbnails.default.url}
-            title={e.items[0].snippet.title.replaceAll("&#39;", "'")}
-          />
-        ))}
-        <InputWrapper>
-          <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
-          <InputDiv>
-            <StyledInput ref={inputRef} placeholder="ex) YPG" />
-            <Button
-              buttonType="large"
-              colorType="aqua"
-              width="50"
-              onClick={createPlayList}
-            >
-              생성
-            </Button>
-          </InputDiv>
-        </InputWrapper>
+        {songInfoArr.length === 0 ? (
+          <p>선택된게 없네요</p>
+        ) : (
+          <>
+            {songInfoArr.map((e) => (
+              <SongItem
+                src={e.items[0].snippet.thumbnails.default.url}
+                title={e.items[0].snippet.title.replaceAll("&#39;", "'")}
+              />
+            ))}
+            <InputWrapper>
+              <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
+              <InputDiv>
+                <StyledInput ref={inputRef} placeholder="ex) YPG" />
+                <Button
+                  buttonType="large"
+                  colorType="aqua"
+                  width="50"
+                  onClick={createPlayList}
+                >
+                  생성
+                </Button>
+              </InputDiv>
+            </InputWrapper>
+          </>
+        )}
       </ModalBody>
     </ModalWrapper>
   );

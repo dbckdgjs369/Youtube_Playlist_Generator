@@ -1,7 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { UserContext } from "../../store/UserInfoContext";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import axios from "axios";
 import Button from "components/Button/Button";
 import { makeList } from "../../utils/removeTime";
 import { VideoInfo } from "types/video";
@@ -9,7 +7,11 @@ import SelectBox from "components/SelectBox/SelectBox";
 import { searchVideo } from "apis/Video/video";
 import Loading from "components/Loading/Loading";
 import Modal from "components/Modal/Modal";
-import { dummy } from "testdata/test4";
+import {
+  getAccessToken,
+  getAccessTokenByRefreshToken,
+} from "apis/Tokens/token";
+import { getCookie, setCookie } from "utils/cookie";
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,16 +50,12 @@ const ButtonWrapper = styled.div`
 type ModeProps = "generate" | "edit";
 
 export default function MakePlayListPage() {
-  const [authorizationCode, setAuthorizationCode] = useState("");
   const [songList, setSongList] = useState<string[]>([]);
-  const REDIRECT_URI = "http://localhost:3000/create";
   const textRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const { accessToken, setAccessToken } = useContext(UserContext);
   const [mode, setMode] = useState<ModeProps>("generate");
   const [checkValue, setCheckValue] = useState<string[]>([]);
   const [loading] = useState(false);
-  const [params, setParams] = useState({
+  const [params] = useState({
     key: process.env.REACT_APP_YOUTUBE_API_KEY,
     part: "snippet",
     q: "",
@@ -66,41 +64,32 @@ export default function MakePlayListPage() {
   });
   const [idArr, setIdArr] = useState<VideoInfo[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-
-  async function getAccessToken() {
-    console.log(authorizationCode);
-    const token = axios.post("https://oauth2.googleapis.com/token", {
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      client_secret: process.env.REACT_APP_CLIENT_SECRET,
-      redirect_uri: REDIRECT_URI,
-      code: authorizationCode,
-      grant_type: "authorization_code",
-    });
-    console.log(await token);
-    setAccessToken((await token).data.access_token);
-    sessionStorage.setItem("accessToken", (await token).data.access_token);
-  }
+  const [accessToken, setAccessToken] = useState("");
 
   useEffect(() => {
     const auth = new URLSearchParams(window.location.search).get("code");
     console.log(auth);
-    if (auth !== null) {
-      setAuthorizationCode(auth);
+    if (auth) {
+      (async function () {
+        const token = await getAccessToken({ code: auth });
+        setAccessToken(token.data.access_token);
+        setCookie("refresh_token", token.data.refresh_token, {
+          httpOnly: true,
+        });
+      })();
+    } else {
+      (async function () {
+        const refresh_token = getCookie("refresh_token");
+        const token = await getAccessTokenByRefreshToken({ refresh_token });
+        setAccessToken(token);
+      })();
     }
     window.history.pushState("", "createPage", "/create");
   }, []);
 
-  useEffect(() => {
-    if (authorizationCode !== "") {
-      getAccessToken();
-      console.log(authorizationCode);
-    }
-  }, [authorizationCode]);
-
   const clickGenerate = () => {
     setMode("edit");
     const list = textRef.current?.value;
-    console.log(list);
     if (list !== undefined) {
       setSongList([...new Set(makeList(list.split("\n")))]);
     }
@@ -161,8 +150,11 @@ export default function MakePlayListPage() {
         곡 불러오기
       </Button>
       {modalOpen ? (
-        // <Modal setModalOpen={setModalOpen} songInfoArr={dummy as VideoInfo[]} />
-        <Modal setModalOpen={setModalOpen} songInfoArr={idArr} />
+        <Modal
+          setModalOpen={setModalOpen}
+          songInfoArr={idArr}
+          accessToken={accessToken}
+        />
       ) : null}
     </Wrapper>
   );
