@@ -36,7 +36,6 @@ const REDIRECT_URI = "http://localhost:3000/create";
 const SCOPE = "https://www.googleapis.com/auth/youtube";
 const url = `${API_END_POINT}?prompt=consent&access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
 
-console.log(url);
 export default function LoginPage() {
   return (
     <Wrapper>
