@@ -1,5 +1,8 @@
 # Youtube_Playlist_Generator(YPG)
 
+## 배포 링크
+[바로가기](https://youtube-playlist-generator.vercel.app/)
+
 ## ✨설명
  유튜브 플레이리스트의 타임 라인을 복사해서 넣으면 내 재생목록으로 만들어주는 프로그램입니다.  
  일일이 동영상을 검색하고 재생목록에 추가하는 로직을 자동화 해줍니다.  
