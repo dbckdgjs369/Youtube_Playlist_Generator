@@ -29,7 +29,6 @@ interface SelectBoxProps {
 export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
   const [checkItems, setCheckItems] = useState<string[]>([]);
   const handleSingleCheck = (checked: boolean, id: string) => {
-    console.log(id);
     if (checked) {
       setCheckItems((prev) => [...prev, id]);
     } else {

@@ -68,7 +68,6 @@ export default function MakePlayListPage() {
 
   useEffect(() => {
     const auth = new URLSearchParams(window.location.search).get("code");
-    console.log(auth);
     if (auth) {
       (async function () {
         const token = await getAccessToken({ code: auth });
@@ -104,7 +103,6 @@ export default function MakePlayListPage() {
       return searchVideo(params);
     });
     const result = await Promise.all(promiseResult);
-    console.log(result);
     setIdArr(result);
     setModalOpen(true);
   };
