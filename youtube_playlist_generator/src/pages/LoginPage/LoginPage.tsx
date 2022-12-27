@@ -32,7 +32,7 @@ const LoginBtn = styled.button`
 `;
 
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
-const REDIRECT_URI = "http://localhost:3000/create";
+const REDIRECT_URI = "https://youtube-playlist-generator.vercel.app/create";
 const SCOPE = "https://www.googleapis.com/auth/youtube";
 const url = `${API_END_POINT}?prompt=consent&access_type=offline&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
 

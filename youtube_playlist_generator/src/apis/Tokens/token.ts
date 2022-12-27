@@ -2,7 +2,7 @@ import { refreshType, accessType } from "types/token";
 import axios from "axios";
 
 const API_ENDPOINT = "https://oauth2.googleapis.com/token";
-const REDIRECT_URI = "http://localhost:3000/create";
+const REDIRECT_URI = "https://youtube-playlist-generator.vercel.app/create";
 
 const getAccessToken = async ({ code }: accessType) => {
   const access_token = await axios.post(`${API_ENDPOINT}`, {
