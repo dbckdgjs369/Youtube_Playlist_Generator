@@ -15,9 +15,10 @@ import { getCookie, setCookie } from "utils/cookie";
 
 const Wrapper = styled.div`
   display: flex;
+  height: 100%;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  /* flex-direction: column; */
   gap: 50px;
   margin-top: 30px;
 `;
@@ -32,7 +33,8 @@ const TextBox = styled.textarea`
 `;
 
 const Title = styled.h1`
-  font-size: large;
+  font-size: 30px;
+  font-weight: 800;
 `;
 
 const ContentDiv = styled.div`
@@ -44,6 +46,25 @@ const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 30px;
+`;
+const Logo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+`;
+const LogoText = styled.p`
+  font-family: "Black Han Sans", sans-serif;
+`;
+const ContentWrapper = styled.div`
+  display: flex;
+  margin-top: 50px;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  /* align-items: center; */
   gap: 20px;
 `;
 
@@ -109,51 +130,61 @@ export default function MakePlayListPage() {
 
   return (
     <Wrapper>
-      <Title>타임라인 넣어주세요</Title>
-      {loading ? <Loading /> : null}
-      <ContentDiv>
-        <TextBox ref={textRef} disabled={mode === "edit"} />
-        <ButtonWrapper>
-          {mode === "generate" ? (
-            <Button
-              buttonType="large"
-              colorType="aqua"
-              onClick={clickGenerate}
-              disabled={loading}
-            >
-              리스트 생성
-            </Button>
-          ) : (
-            <Button
-              buttonType="large"
-              colorType="aqua"
-              onClick={clickEdit}
-              disabled={loading}
-            >
-              리스트 편집
-            </Button>
-          )}
-        </ButtonWrapper>
-        <SelectBox
-          songList={songList.filter((element) => element !== "")}
-          setCheckValue={setCheckValue}
-        />
-      </ContentDiv>
-      <Button
-        buttonType="large"
-        colorType="aqua"
-        onClick={getIdArr}
-        disabled={loading}
-      >
-        곡 불러오기
-      </Button>
-      {modalOpen ? (
-        <Modal
-          setModalOpen={setModalOpen}
-          songInfoArr={idArr}
-          accessToken={accessToken}
-        />
-      ) : null}
+      <Logo>
+        <img src="./images/youtube.png" width="50px" alt="youtube logo" />
+        <LogoText>Youtube Playlist Generator</LogoText>
+      </Logo>
+      <ContentWrapper>
+        <Title>타임라인 넣어주세요</Title>
+        {loading ? <Loading /> : null}
+        <ContentDiv>
+          <TextBox
+            ref={textRef}
+            disabled={mode === "edit"}
+            placeholder="타임라인을 넣어주세요"
+          />
+          <ButtonWrapper>
+            {mode === "generate" ? (
+              <Button
+                buttonType="large"
+                colorType="aqua"
+                onClick={clickGenerate}
+                disabled={loading}
+              >
+                리스트 생성
+              </Button>
+            ) : (
+              <Button
+                buttonType="large"
+                colorType="aqua"
+                onClick={clickEdit}
+                disabled={loading}
+              >
+                리스트 편집
+              </Button>
+            )}
+          </ButtonWrapper>
+          <SelectBox
+            songList={songList.filter((element) => element !== "")}
+            setCheckValue={setCheckValue}
+          />
+        </ContentDiv>
+        <Button
+          buttonType="large"
+          colorType="aqua"
+          onClick={getIdArr}
+          disabled={loading}
+        >
+          곡 불러오기
+        </Button>
+        {modalOpen ? (
+          <Modal
+            setModalOpen={setModalOpen}
+            songInfoArr={idArr}
+            accessToken={accessToken}
+          />
+        ) : null}
+      </ContentWrapper>
     </Wrapper>
   );
 }

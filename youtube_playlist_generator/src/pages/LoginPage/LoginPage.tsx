@@ -65,11 +65,7 @@ const IntroWrapper = styled.div`
 const H2 = styled.h2`
   color: gray;
 `;
-const Img = styled.img`
-  /* position: absolute;
-  left: 10px;
-  top: 10px; */
-`;
+
 const Logo = styled.div`
   display: flex;
   flex-direction: row;
@@ -80,8 +76,6 @@ const Logo = styled.div`
 `;
 const LogoText = styled.p`
   font-family: "Black Han Sans", sans-serif;
-
-  /* font-weight; */
 `;
 
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
@@ -93,7 +87,7 @@ export default function LoginPage() {
   return (
     <LoginWrapper>
       <Logo>
-        <Img src="./images/youtube.png" width="50px" alt="youtube logo" />
+        <img src="./images/youtube.png" width="50px" alt="youtube logo" />
         <LogoText>Youtube Playlist Generator</LogoText>
       </Logo>
       <FormWrapper>
