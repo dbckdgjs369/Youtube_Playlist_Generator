@@ -12,6 +12,7 @@ import {
   getAccessTokenByRefreshToken,
 } from "apis/Tokens/token";
 import { getCookie, setCookie } from "utils/cookie";
+import Logo from "components/Logo/Logo";
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,17 +49,7 @@ const ButtonWrapper = styled.div`
   justify-content: center;
   gap: 30px;
 `;
-const Logo = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: absolute;
-  left: 0;
-  top: 0;
-`;
-const LogoText = styled.p`
-  font-family: "Black Han Sans", sans-serif;
-`;
+
 const ContentWrapper = styled.div`
   display: flex;
   margin-top: 50px;
@@ -130,10 +121,7 @@ export default function MakePlayListPage() {
 
   return (
     <Wrapper>
-      <Logo>
-        <img src="./images/youtube.png" width="50px" alt="youtube logo" />
-        <LogoText>Youtube Playlist Generator</LogoText>
-      </Logo>
+      <Logo />
       <ContentWrapper>
         <Title>타임라인 넣어주세요</Title>
         {loading ? <Loading /> : null}
