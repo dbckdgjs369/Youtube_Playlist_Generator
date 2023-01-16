@@ -84,7 +84,7 @@ const ContentDiv = styled.div`
 
 const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
   const [songArr, setSongArr] = useState<VideoInfo[]>();
-
+  const [deleteId, setDeleteId] = useState<string>();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const closeModal = () => {
     setModalOpen(false);
@@ -102,14 +102,14 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
       window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
     };
   }, []);
+
   useEffect(() => {
-    console.log("세션", songArr);
-    console.log(songInfoArr);
-    const temp = sessionStorage.getItem("songs");
-    if (temp) {
-      setSongArr(JSON.parse(temp));
+    const songs = sessionStorage.getItem("songs");
+    if (songs) {
+      setSongArr(JSON.parse(songs));
     }
-  }, []);
+  }, [sessionStorage.getItem("songs")]);
+
   const createPlayList = async () => {
     let playlistId = "";
     if (inputRef.current !== null) {
@@ -118,10 +118,23 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
       const data = createNewPlayList(playlistTitle, accessToken);
       playlistId = (await data).data.id;
     }
-    for (const id of songInfoArr) {
-      await addToPlayList(accessToken, playlistId, id.items[0].id.videoId);
+    if (songArr) {
+      for (const id of songArr) {
+        await addToPlayList(accessToken, playlistId, id.items[0].id.videoId);
+      }
     }
   };
+  useEffect(() => {
+    const songObj = sessionStorage.getItem("songs");
+    if (songObj) {
+      const songArr: VideoInfo[] = JSON.parse(songObj);
+      const deleteArr = songArr.filter(
+        (e) => e.items[0].id.videoId !== deleteId
+      );
+      setSongArr(deleteArr);
+      sessionStorage.setItem("songs", JSON.stringify(deleteArr));
+    }
+  }, [deleteId]);
 
   return (
     <ModalWrapper onClick={closeModal}>
@@ -130,53 +143,13 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
           <p style={{ fontWeight: 600, fontSize: "20px" }}>곡을 선택해주세요</p>
         ) : (
           <>
-            {/* <ContentDiv>
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1asdgasdgasdgasdgasdgasdgsadgsadgsadgsadgsdag"
-                vid="1"
-              />
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1"
-                vid="1"
-              />
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1"
-                vid="1"
-              />
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1"
-                vid="1"
-              />
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1"
-                vid="1"
-              />
-              <SongItem
-                src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
-                title="1"
-                vid="1"
-              />
-            </ContentDiv> */}
-            {/* <ContentDiv>
-              {songInfoArr.map((e) => (
-                <SongItem
-                  src={e.items[0].snippet.thumbnails.default.url}
-                  title={e.items[0].snippet.title.replaceAll("&#39;", "'")}
-                  vid={e.items[0].id.videoId}
-                />
-              ))}
-            </ContentDiv> */}
             <ContentDiv>
               {songArr?.map((e) => (
                 <SongItem
                   src={e.items[0].snippet.thumbnails.default.url}
                   title={e.items[0].snippet.title.replaceAll("&#39;", "'")}
                   vid={e.items[0].id.videoId}
+                  setDeleteId={setDeleteId}
                 />
               ))}
             </ContentDiv>

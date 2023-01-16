@@ -27,9 +27,10 @@ interface SongItemProps {
   src: string;
   title: string;
   vid: string;
+  setDeleteId: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const SongItem = ({ src, title, vid }: SongItemProps) => {
+const SongItem = ({ src, title, vid, setDeleteId }: SongItemProps) => {
   return (
     <Wrapper>
       <Img src={src} alt="thumbnail" />
@@ -39,7 +40,7 @@ const SongItem = ({ src, title, vid }: SongItemProps) => {
       <img
         src="./images/x.svg"
         alt="cancel"
-        onClick={() => console.log("click")}
+        onClick={() => setDeleteId(vid)}
       ></img>
     </Wrapper>
   );
