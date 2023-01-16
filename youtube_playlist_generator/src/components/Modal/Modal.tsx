@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { addToPlayList, createNewPlayList } from "apis/Playlist/playlist";
 import Button from "components/Button/Button";
 import { VideoInfo } from "types/video";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { text } from "styles/theme";
 import SongItem from "./SongItem";
 
@@ -83,6 +83,8 @@ const ContentDiv = styled.div`
 `;
 
 const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
+  const [songArr, setSongArr] = useState<VideoInfo[]>();
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const closeModal = () => {
     setModalOpen(false);
@@ -101,7 +103,12 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
     };
   }, []);
   useEffect(() => {
+    console.log("세션", songArr);
     console.log(songInfoArr);
+    const temp = sessionStorage.getItem("songs");
+    if (temp) {
+      setSongArr(JSON.parse(temp));
+    }
   }, []);
   const createPlayList = async () => {
     let playlistId = "";
@@ -119,11 +126,11 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
   return (
     <ModalWrapper onClick={closeModal}>
       <ModalBody onClick={(e) => e.stopPropagation()}>
-        {songInfoArr.length === 0 ? (
+        {songArr?.length === 0 ? (
           <p style={{ fontWeight: 600, fontSize: "20px" }}>곡을 선택해주세요</p>
         ) : (
           <>
-            <ContentDiv>
+            {/* <ContentDiv>
               <SongItem
                 src="https://i.ytimg.com/vi/zAbjLWrphHM/default.jpg"
                 title="1asdgasdgasdgasdgasdgasdgsadgsadgsadgsadgsdag"
@@ -154,7 +161,7 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
                 title="1"
                 vid="1"
               />
-            </ContentDiv>
+            </ContentDiv> */}
             {/* <ContentDiv>
               {songInfoArr.map((e) => (
                 <SongItem
@@ -164,6 +171,15 @@ const Modal = ({ setModalOpen, songInfoArr, accessToken }: ModalProps) => {
                 />
               ))}
             </ContentDiv> */}
+            <ContentDiv>
+              {songArr?.map((e) => (
+                <SongItem
+                  src={e.items[0].snippet.thumbnails.default.url}
+                  title={e.items[0].snippet.title.replaceAll("&#39;", "'")}
+                  vid={e.items[0].id.videoId}
+                />
+              ))}
+            </ContentDiv>
             <InputWrapper>
               <StyledLabel>플레이리스트 제목을 입력해주세요</StyledLabel>
               <InputDiv>

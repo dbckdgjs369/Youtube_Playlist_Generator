@@ -118,6 +118,10 @@ export default function MakePlayListPage() {
     setIdArr(result);
     setModalOpen(true);
   };
+  useEffect(() => {
+    console.log(idArr);
+    sessionStorage.setItem("songs", JSON.stringify(idArr));
+  }, [idArr]);
 
   return (
     <Wrapper>
@@ -129,7 +133,7 @@ export default function MakePlayListPage() {
           <TextBox
             ref={textRef}
             disabled={mode === "edit"}
-            placeholder="타임라인을 넣어주세요"
+            placeholder="타임라인을 넣어주세요(가수명도 넣어주면 더 좋아요) &#13;&#10;ex)&#13;&#10;00:00:00 노래 - 가수&#13;&#10;00:00:00 노래 - 가수&#13;&#10;00:00:00 노래 - 가수&#13;&#10;..."
           />
           <ButtonWrapper>
             {mode === "generate" ? (
