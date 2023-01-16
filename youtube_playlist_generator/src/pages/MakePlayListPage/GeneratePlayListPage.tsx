@@ -12,12 +12,14 @@ import {
   getAccessTokenByRefreshToken,
 } from "apis/Tokens/token";
 import { getCookie, setCookie } from "utils/cookie";
+import Logo from "components/Logo/Logo";
 
 const Wrapper = styled.div`
   display: flex;
+  height: 100%;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+  /* flex-direction: column; */
   gap: 50px;
   margin-top: 30px;
 `;
@@ -32,7 +34,8 @@ const TextBox = styled.textarea`
 `;
 
 const Title = styled.h1`
-  font-size: large;
+  font-size: 30px;
+  font-weight: 800;
 `;
 
 const ContentDiv = styled.div`
@@ -44,6 +47,15 @@ const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 30px;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  margin-top: 50px;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  /* align-items: center; */
   gap: 20px;
 `;
 
@@ -106,54 +118,65 @@ export default function MakePlayListPage() {
     setIdArr(result);
     setModalOpen(true);
   };
+  useEffect(() => {
+    console.log(idArr);
+    sessionStorage.setItem("songs", JSON.stringify(idArr));
+  }, [idArr]);
 
   return (
     <Wrapper>
-      <Title>타임라인 넣어주세요</Title>
-      {loading ? <Loading /> : null}
-      <ContentDiv>
-        <TextBox ref={textRef} disabled={mode === "edit"} />
-        <ButtonWrapper>
-          {mode === "generate" ? (
-            <Button
-              buttonType="large"
-              colorType="aqua"
-              onClick={clickGenerate}
-              disabled={loading}
-            >
-              리스트 생성
-            </Button>
-          ) : (
-            <Button
-              buttonType="large"
-              colorType="aqua"
-              onClick={clickEdit}
-              disabled={loading}
-            >
-              리스트 편집
-            </Button>
-          )}
-        </ButtonWrapper>
-        <SelectBox
-          songList={songList.filter((element) => element !== "")}
-          setCheckValue={setCheckValue}
-        />
-      </ContentDiv>
-      <Button
-        buttonType="large"
-        colorType="aqua"
-        onClick={getIdArr}
-        disabled={loading}
-      >
-        곡 불러오기
-      </Button>
-      {modalOpen ? (
-        <Modal
-          setModalOpen={setModalOpen}
-          songInfoArr={idArr}
-          accessToken={accessToken}
-        />
-      ) : null}
+      <Logo />
+      <ContentWrapper>
+        <Title>타임라인 넣어주세요</Title>
+        {loading ? <Loading /> : null}
+        <ContentDiv>
+          <TextBox
+            ref={textRef}
+            disabled={mode === "edit"}
+            placeholder="타임라인을 넣어주세요(가수명도 넣어주면 더 좋아요) &#13;&#10;ex)&#13;&#10;00:00:00 노래 - 가수&#13;&#10;00:00:00 노래 - 가수&#13;&#10;00:00:00 노래 - 가수&#13;&#10;..."
+          />
+          <ButtonWrapper>
+            {mode === "generate" ? (
+              <Button
+                buttonType="large"
+                colorType="aqua"
+                onClick={clickGenerate}
+                disabled={loading}
+              >
+                리스트 생성
+              </Button>
+            ) : (
+              <Button
+                buttonType="large"
+                colorType="aqua"
+                onClick={clickEdit}
+                disabled={loading}
+              >
+                리스트 편집
+              </Button>
+            )}
+          </ButtonWrapper>
+          <SelectBox
+            songList={songList.filter((element) => element !== "")}
+            setCheckValue={setCheckValue}
+          />
+        </ContentDiv>
+        <Button
+          buttonType="large"
+          colorType="aqua"
+          onClick={getIdArr}
+          disabled={loading}
+        >
+          곡 불러오기
+        </Button>
+        {modalOpen ? (
+          <Modal
+            setModalOpen={setModalOpen}
+            songInfoArr={idArr}
+            accessToken={accessToken}
+          />
+        ) : null}
+      </ContentWrapper>
     </Wrapper>
   );
 }

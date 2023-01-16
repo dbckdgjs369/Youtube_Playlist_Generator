@@ -1,14 +1,7 @@
 import styled from "@emotion/styled";
 import Loading from "components/Loading/Loading";
+import Logo from "components/Logo/Logo";
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  justify-content: center;
-  height: 100vh;
-`;
 const Title = styled.h1`
   font-size: 50px;
   font-weight: 800;
@@ -65,24 +58,6 @@ const IntroWrapper = styled.div`
 const H2 = styled.h2`
   color: gray;
 `;
-const Img = styled.img`
-  /* position: absolute;
-  left: 10px;
-  top: 10px; */
-`;
-const Logo = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: absolute;
-  left: 0;
-  top: 0;
-`;
-const LogoText = styled.p`
-  font-family: "Black Han Sans", sans-serif;
-
-  /* font-weight; */
-`;
 
 const API_END_POINT = "https://accounts.google.com/o/oauth2/auth";
 const REDIRECT_URI = "http://localhost:3000/create";
@@ -92,10 +67,7 @@ const url = `${API_END_POINT}?prompt=consent&access_type=offline&client_id=${pro
 export default function LoginPage() {
   return (
     <LoginWrapper>
-      <Logo>
-        <Img src="./images/youtube.png" width="50px" alt="youtube logo" />
-        <LogoText>Youtube Playlist Generator</LogoText>
-      </Logo>
+      <Logo />
       <FormWrapper>
         <Title>Sign in</Title>
         <IntroWrapper>
