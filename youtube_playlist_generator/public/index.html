@@ -52,6 +52,12 @@
       href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
     <meta
       name="description"
       content="Web site created using create-react-app"
@@ -71,9 +77,23 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>YPG · Youtube Playlist Generator</title>
   </head>
   <body>
+    <script>
+      // 다크모드 초기 적용(FOUC 방지)
+      (function () {
+        try {
+          var t =
+            localStorage.getItem("ypg-theme") ||
+            (window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

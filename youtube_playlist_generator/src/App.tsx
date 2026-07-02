@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import GeneratePlayListPage from "./pages/MakePlayListPage/GeneratePlayListPage";
+import ThemeToggle from "./components/ThemeToggle/ThemeToggle";
 import "./styles/reset.css";
 
 // import { worker } from "./mocks/server";
@@ -12,6 +13,7 @@ import "./styles/reset.css";
 function App() {
   return (
     <div className="App">
+      <ThemeToggle />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />

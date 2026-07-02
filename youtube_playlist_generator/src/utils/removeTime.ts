@@ -1,12 +1,16 @@
-// const makeList = (songList: string[]) => {
-//   return songList.map((value: string) =>
-//     value
-//       .replace(/ *(\s{0,})([0-5][0-9]):([0-5][0-9])(:[0-5][0-9])*/g, "")
-//       .trim()
-//   );
-// };
+// 타임라인 한 줄에서 타임스탬프/트랙번호를 제거하고 "곡명 - 가수"만 남긴다.
+// 공백을 보존해야 검색 정확도가 올라가므로 join(" ")이 아닌 정규식 치환을 사용한다.
 const makeList = (songList: string[]) => {
-  return songList.map((value) => value.split(" ").slice(1).join(""));
+  return songList.map((value) =>
+    value
+      // [00:00], (1:02:03), 00:00, 1:02:03 형태의 타임스탬프 제거
+      .replace(/[[(]?\s*\d{1,2}:\d{2}(?::\d{2})?\s*[)\]]?/g, " ")
+      // 앞머리의 "1.", "01)", "1)" 같은 트랙 번호 제거
+      .replace(/^\s*\d{1,3}[.)]\s+/, " ")
+      // 연속 공백 정리
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 };
 
 export { makeList };

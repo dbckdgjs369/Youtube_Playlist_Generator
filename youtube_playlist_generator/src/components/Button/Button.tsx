@@ -1,4 +1,4 @@
-import { color, text } from "../../styles/theme";
+import { color, text, gradient, shadow } from "../../styles/theme";
 import styled from "@emotion/styled";
 
 export interface ButtonProps
@@ -8,71 +8,43 @@ export interface ButtonProps
   width?: string;
   height?: string;
 }
-const handleButton = (colorType: string, buttonType: string) => {
-  let buttonColor = "";
-  let hoverColor = "";
-  let textColor = "";
+
+const handleColor = (colorType: string) => {
   switch (colorType) {
-    case "main-color": {
-      buttonColor = color.$mainColor;
-      hoverColor = color.$hoverMaincolor;
-      textColor = "white";
-      break;
-    }
-    case "skyblue": {
-      buttonColor = color.$skyBlue;
-      hoverColor = color.$hoverSkyBlue;
-      textColor = "white";
-      break;
-    }
-    case "aqua": {
-      buttonColor = color.$aqua;
-      hoverColor = color.$hoverAqua;
-      textColor = "black";
-      break;
-    }
-    case "gray": {
-      buttonColor = color.$gray100;
-      hoverColor = color.$gray200;
-      textColor = "black";
-      break;
-    }
+    case "main-color":
+    case "aqua":
+      return `
+        background: ${gradient.$red};
+        color: #ffffff;
+        box-shadow: ${shadow.$redGlow};
+        &:hover { filter: brightness(1.05); }
+      `;
+    case "skyblue":
+      return `
+        background-color: ${color.$skyBlue};
+        color: #ffffff;
+        box-shadow: ${shadow.$soft};
+        &:hover { background-color: ${color.$hoverSkyBlue}; }
+      `;
+    case "gray":
+      return `
+        background-color: ${color.$gray100};
+        color: ${color.$ink};
+        &:hover { background-color: ${color.$gray200}; }
+      `;
     default:
       return ``;
   }
+};
 
+const handleSize = (buttonType: string) => {
   switch (buttonType) {
     case "small":
-      return `
-        width: 62px;
-        height: 45px;
-        background-color:${buttonColor};
-        color:${textColor};
-        &:hover{
-          background-color:${hoverColor};
-        }
-      `;
+      return `width: 72px; height: 46px; font-size: 15px;`;
     case "large":
-      return `
-        width:100px;
-        height:45px;
-        background-color:${buttonColor};
-        color:${textColor};
-        &:hover{
-          background-color:${hoverColor};
-        }
-      `;
+      return `width: 116px; height: 46px;`;
     case "line":
-      return `
-        width:250px;
-        height:45px;
-        background-color:white;
-        border:1px solid ${buttonColor};
-        color:${buttonColor};
-        &:hover{
-          border:2px solid ${buttonColor}
-        }
-      `;
+      return `width: 250px; height: 46px;`;
     default:
       return ``;
   }
@@ -102,12 +74,32 @@ const Button = ({
 
 const StyledButton = styled.button<ButtonProps>`
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   ${text.$subtitle1}
-  ${(props) => handleButton(props.colorType, props.buttonType)};
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  ${(props) => handleSize(props.buttonType)}
+  ${(props) => handleColor(props.colorType)};
+  ${(props) => (props.width ? `width: ${props.width}px;` : "")}
+  ${(props) => (props.height ? `height: ${props.height}px;` : "")}
   cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+  }
 `;
 
 export default Button;
