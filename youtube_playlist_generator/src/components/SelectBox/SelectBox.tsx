@@ -99,7 +99,7 @@ export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
   };
   useEffect(() => {
     setCheckValue(checkItems);
-  }, [checkItems]);
+  }, [checkItems, setCheckValue]);
 
   return (
     <Wrapper>
