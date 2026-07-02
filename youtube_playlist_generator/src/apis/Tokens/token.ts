@@ -2,7 +2,9 @@ import { refreshType, accessType } from "types/token";
 import axios from "axios";
 
 const API_ENDPOINT = "https://oauth2.googleapis.com/token";
-const REDIRECT_URI = "https://youtube-playlist-generator.vercel.app/create";
+// 배포/로컬 어디서든 현재 도메인 기준으로 동작하도록 동적 처리.
+// (Google Cloud Console의 '승인된 리디렉션 URI'에 해당 도메인/create 를 등록해야 함)
+const REDIRECT_URI = `${window.location.origin}/create`;
 
 const getAccessToken = async ({ code }: accessType) => {
   const access_token = await axios.post(`${API_ENDPOINT}`, {

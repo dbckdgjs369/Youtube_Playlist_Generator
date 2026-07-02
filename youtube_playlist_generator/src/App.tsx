@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage";
-// import MakePlaylistPage from "./pages/MakePlayListPage/MakePlaylistPage";
-
 import GeneratePlayListPage from "./pages/MakePlayListPage/GeneratePlayListPage";
-// import { worker } from "./mocks/server";
+import ThemeToggle from "./components/ThemeToggle/ThemeToggle";
 import "./styles/reset.css";
+
+// import { worker } from "./mocks/server";
 
 // if (process.env.NODE_ENV === "development") {
 //   worker.start();
@@ -13,6 +13,7 @@ import "./styles/reset.css";
 function App() {
   return (
     <div className="App">
+      <ThemeToggle />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />

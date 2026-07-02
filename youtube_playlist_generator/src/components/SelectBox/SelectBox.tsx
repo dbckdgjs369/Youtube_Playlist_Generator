@@ -1,24 +1,76 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { text } from "styles/theme";
 
 const Wrapper = styled.div`
-  border: 1px solid;
-  width: 400px;
-  height: 400px;
-  border-radius: 8px;
-  padding: 20px;
+  border: 1.5px solid var(--ypg-border);
+  width: 100%;
+  height: 380px;
+  border-radius: 16px;
+  padding: 8px;
   overflow: auto;
   overflow-x: hidden;
-  line-height: 1.5rem;
+  background-color: var(--ypg-input);
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--ypg-border);
+    border-radius: 8px;
+  }
 `;
 
-const RowElement = styled.div`
+const AllRow = styled.label`
   display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+  background-color: var(--ypg-card-solid);
+  border: 1px solid var(--ypg-border);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ypg-ink);
+  cursor: pointer;
+  position: sticky;
+  top: 0;
 `;
 
-const StyledLabel = styled.label`
-  ${text.$body1}
+const Row = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--ypg-sub);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+
+  &:hover {
+    background-color: var(--ypg-row-hover);
+  }
+`;
+
+const Check = styled.input`
+  width: 17px;
+  height: 17px;
+  accent-color: #ff0033;
+  cursor: pointer;
+  flex-shrink: 0;
+`;
+
+const Empty = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ypg-faint);
+  font-size: 14px;
+  text-align: center;
 `;
 
 interface SelectBoxProps {
@@ -47,34 +99,39 @@ export default function SelectBox({ songList, setCheckValue }: SelectBoxProps) {
   };
   useEffect(() => {
     setCheckValue(checkItems);
-  }, [checkItems]);
+  }, [checkItems, setCheckValue]);
 
   return (
     <Wrapper>
       {songList.length !== 0 ? (
-        <RowElement>
-          <input
+        <AllRow>
+          <Check
             type="checkbox"
             onChange={(e) => handleAllCheck(e.target.checked)}
             checked={checkItems.length === songList.length}
           />
-          <StyledLabel>
-            전체 선택 ( {checkItems.length} / {songList.length} )
-          </StyledLabel>
-        </RowElement>
-      ) : null}
+          전체 선택 ( {checkItems.length} / {songList.length} )
+        </AllRow>
+      ) : (
+        <Empty>
+          <span style={{ fontSize: "28px" }}>🎧</span>
+          <span>
+            타임라인을 입력하고 <b>리스트 생성</b>을 눌러주세요
+          </span>
+        </Empty>
+      )}
       {songList.map((value, index) =>
         !value ? (
           <div key={index}></div>
         ) : (
-          <div key={index}>
-            <input
+          <Row key={index}>
+            <Check
               type="checkbox"
               onChange={(e) => handleSingleCheck(e.target.checked, value)}
               checked={checkItems.includes(value)}
             />
             {value}
-          </div>
+          </Row>
         )
       )}
     </Wrapper>
